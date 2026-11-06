@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Paleta da logo (mesma do spenvolt-website: app/theme/colors.css) -->
+    <color name="dark_blue">#0E1A2B</color>
+    <color name="yellow">#FFD43B</color>
+    <color name="green_start">#8BFF5E</color>
+    <color name="green_end">#1FD38A</color>
+    <color name="blue_start">#00C6FF</color>
+    <color name="blue_end">#1D6BFF</color>
+
+    <!-- Cores de apoio usadas no site -->
+    <color name="green_button">#72F45B</color>   <!-- botão principal -->
+    <color name="green_text">#15803D</color>     <!-- links e sucesso -->
+    <color name="sky">#0EA5E9</color>            <!-- fim da barrinha de destaque -->
+    <color name="text">#1B2A41</color>           <!-- texto dos formulários -->
+    <color name="dark_blue_soft">#16263B</color> <!-- itens ativos no menu -->
+
+    <!-- Neutros -->
+    <color name="white">#FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="background">#E2E8F0</color>
+    <color name="slate_50">#F8FAFC</color>
+    <color name="slate_100">#F1F5F9</color>
+    <color name="slate_300">#CBD5E1</color>
+    <color name="slate_400">#94A3B8</color>
+    <color name="slate_500">#64748B</color>
+    <color name="gray_100">#F3F4F6</color>
+    <color name="gray_200">#E5E7EB</color>
+    <color name="gray_500">#6B7280</color>
+
+    <!-- Status de consumo -->
+    <color name="status_ok">#22C55E</color>
+    <color name="status_warning">#FACC15</color>
+    <color name="status_exceeded">#EF4444</color>
+    <color name="status_none">#D1D5DB</color>
+    <color name="red_600">#DC2626</color>
+    <color name="red_soft">#F87171</color>
+
+    <!-- Fundo das seções da planta -->
+    <color name="room_low">#F0FDF4</color>
+    <color name="room_warning">#FEFCE8</color>
+    <color name="room_high">#FEF2F2</color>
 </resources>
