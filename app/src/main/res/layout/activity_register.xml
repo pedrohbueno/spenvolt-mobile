@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_blue"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <include layout="@layout/view_brand_header" />
+
+        <LinearLayout
+            style="@style/SpenVolt.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:padding="24dp">
+
+            <TextView
+                style="@style/SpenVolt.Text.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Criar conta" />
+
+            <View style="@style/SpenVolt.AccentBar" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Nome *" />
+
+            <EditText
+                android:id="@+id/etName"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:hint="Seu nome"
+                android:inputType="textPersonName|textCapWords" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="E-mail *" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="emailAddress"
+                android:hint="voce@email.com"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Senha *" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="newPassword"
+                android:hint="Mínimo de 6 caracteres"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/txtError"
+                style="@style/SpenVolt.Text.Error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegister"
+                style="@style/SpenVolt.Button.Green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Cadastrar" />
+
+            <TextView
+                android:id="@+id/linkLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textColor="@color/slate_500"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

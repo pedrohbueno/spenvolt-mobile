@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Membros da residência selecionada -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/SpenVolt.Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Membros" />
+
+        <View style="@style/SpenVolt.AccentBar" />
+
+        <TextView
+            android:id="@+id/txtResidence"
+            style="@style/SpenVolt.Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/txtStatus"
+            style="@style/SpenVolt.Text.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Carregando membros…"
+            android:textSize="13sp" />
+
+        <!-- Grade 2 colunas: cards dos membros + card "+ Adicionar membro" -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMembers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:nestedScrollingEnabled="false" />
+
+        <!-- Dispositivos do membro tocado -->
+        <LinearLayout
+            android:id="@+id/memberDetail"
+            style="@style/SpenVolt.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtDetailTitle"
+                style="@style/SpenVolt.Text.CardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtDetailEmpty"
+                style="@style/SpenVolt.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Nenhum dispositivo vinculado a este membro."
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/detailBars"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

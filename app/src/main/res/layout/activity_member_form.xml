@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adicionar membro -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/SpenVolt.Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adicionar membro" />
+
+        <View style="@style/SpenVolt.AccentBar" />
+
+        <LinearLayout
+            style="@style/SpenVolt.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:text="Nome *" />
+
+            <EditText
+                android:id="@+id/etName"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ana"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLength="100" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="E-mail *" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="ana@email.com"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="URL da foto" />
+
+            <EditText
+                android:id="@+id/etPhotoUrl"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="https://..."
+                android:inputType="textUri" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Residência" />
+
+            <Spinner
+                android:id="@+id/spinnerResidence"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="14dp"
+                android:paddingEnd="10dp"
+                android:popupBackground="@color/white" />
+
+            <TextView
+                android:id="@+id/txtError"
+                style="@style/SpenVolt.Text.Error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                style="@style/SpenVolt.Button.Green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Salvar membro" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                style="@style/SpenVolt.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Cancelar" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

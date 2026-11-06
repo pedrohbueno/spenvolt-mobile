@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Perfil: dados do usuário, trocar senha e sair -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            style="@style/SpenVolt.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/txtAvatar"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/bg_circle_green"
+                android:gravity="center"
+                android:textColor="@color/dark_blue"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtEmail"
+                style="@style/SpenVolt.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp" />
+
+            <View style="@style/SpenVolt.AccentBar" android:layout_marginTop="12dp" />
+
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Senha alterada com sucesso."
+                android:textColor="@color/green_text"
+                android:textSize="13sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Formulário de troca de senha (aparece ao tocar em "Trocar senha") -->
+        <LinearLayout
+            android:id="@+id/passwordForm"
+            style="@style/SpenVolt.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/SpenVolt.Text.CardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trocar senha" />
+
+            <EditText
+                android:id="@+id/etCurrent"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:autofillHints="password"
+                android:hint="Senha atual"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/etNew"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="newPassword"
+                android:hint="Nova senha"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/etConfirm"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="newPassword"
+                android:hint="Confirmar nova senha"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/txtPasswordError"
+                style="@style/SpenVolt.Text.Error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSavePassword"
+                style="@style/SpenVolt.Button.Green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Salvar nova senha" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelPassword"
+                style="@style/SpenVolt.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cancelar" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnChangePassword"
+            style="@style/SpenVolt.Button.Outline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Trocar senha" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogout"
+            style="@style/SpenVolt.Button.Danger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Sair" />
+    </LinearLayout>
+</ScrollView>

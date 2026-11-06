@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menu lateral: residência selecionada, telas, perfil e sair -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerPanel"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/dark_blue"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <!-- Logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="40dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_spenvolt_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Spen"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Volt"
+            android:textColor="@color/yellow"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Residência selecionada (vale para Dispositivos, Membros, Economize e Configurações) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_drawer_box"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Residência"
+            android:textColor="@color/white_70"
+            android:textSize="13sp" />
+
+        <Spinner
+            android:id="@+id/spinnerResidence"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/yellow"
+            android:popupBackground="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/navHome"
+        style="@style/SpenVolt.DrawerItem"
+        android:text="Início" />
+
+    <TextView
+        android:id="@+id/navDevices"
+        style="@style/SpenVolt.DrawerItem"
+        android:text="Dispositivos" />
+
+    <TextView
+        android:id="@+id/navMembers"
+        style="@style/SpenVolt.DrawerItem"
+        android:text="Membros" />
+
+    <TextView
+        android:id="@+id/navEconomize"
+        style="@style/SpenVolt.DrawerItem"
+        android:text="Economize" />
+
+    <TextView
+        android:id="@+id/navSettings"
+        style="@style/SpenVolt.DrawerItem"
+        android:text="Configurações" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/dark_blue_soft" />
+
+    <LinearLayout
+        android:id="@+id/navProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/drawerAvatar"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_circle_blue"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Perfil"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/navLogout"
+        style="@style/SpenVolt.DrawerItem"
+        android:layout_marginBottom="12dp"
+        android:text="Sair"
+        android:textColor="@color/red_soft" />
+</LinearLayout>

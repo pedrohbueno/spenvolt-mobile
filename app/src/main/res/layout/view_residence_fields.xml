@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Campos de uma residência (usados em "Criar residência" e em "Configurações") -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/SpenVolt.Text.Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome *" />
+
+    <EditText
+        android:id="@+id/etName"
+        style="@style/SpenVolt.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Casa da Praia"
+        android:inputType="textCapWords"
+        android:maxLength="100" />
+
+    <TextView
+        style="@style/SpenVolt.Text.Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Endereço *" />
+
+    <EditText
+        android:id="@+id/etAddress"
+        style="@style/SpenVolt.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Rua das Flores, 120"
+        android:inputType="textPostalAddress|textCapWords"
+        android:maxLength="200" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tarifa (R$/kWh) *" />
+
+            <EditText
+                android:id="@+id/etTariff"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="0.8126"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alertar em (%)" />
+
+            <EditText
+                android:id="@+id/etAlert"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="80"
+                android:inputType="number"
+                android:maxLength="3" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limite (kWh)" />
+
+            <EditText
+                android:id="@+id/etKwhLimit"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="500"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limite (R$)" />
+
+            <EditText
+                android:id="@+id/etCostLimit"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="406.30"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

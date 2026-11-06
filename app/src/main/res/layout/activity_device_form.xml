@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adicionar / editar dispositivo, com a prévia ao vivo fixa embaixo -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txtTitle"
+                style="@style/SpenVolt.Text.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adicionar dispositivo" />
+
+            <View style="@style/SpenVolt.AccentBar" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Nome *" />
+
+            <EditText
+                android:id="@+id/etName"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Geladeira"
+                android:inputType="textCapSentences"
+                android:maxLength="100" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SpenVolt.Text.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Marca" />
+
+                    <EditText
+                        android:id="@+id/etBrand"
+                        style="@style/SpenVolt.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Consul"
+                        android:inputType="textCapWords"
+                        android:maxLength="100" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SpenVolt.Text.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Modelo" />
+
+                    <EditText
+                        android:id="@+id/etModel"
+                        style="@style/SpenVolt.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="CRM50"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="100" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Categoria" />
+
+            <EditText
+                android:id="@+id/etCategory"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cozinha"
+                android:inputType="textCapSentences"
+                android:maxLength="100" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SpenVolt.Text.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Potência (W) *" />
+
+                    <EditText
+                        android:id="@+id/etPower"
+                        style="@style/SpenVolt.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="150"
+                        android:inputType="numberDecimal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SpenVolt.Text.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Horas/dia *" />
+
+                    <EditText
+                        android:id="@+id/etHours"
+                        style="@style/SpenVolt.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="24"
+                        android:inputType="numberDecimal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dias/mês *" />
+
+            <EditText
+                android:id="@+id/etDays"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="30"
+                android:inputType="number"
+                android:maxLength="2" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="URL da imagem" />
+
+            <EditText
+                android:id="@+id/etImageUrl"
+                style="@style/SpenVolt.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="https://..."
+                android:inputType="textUri" />
+
+            <!-- Residência: escolhível ao criar, só leitura ao editar -->
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Residência" />
+
+            <Spinner
+                android:id="@+id/spinnerResidence"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="14dp"
+                android:paddingEnd="10dp"
+                android:popupBackground="@color/white" />
+
+            <TextView
+                android:id="@+id/txtResidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_blue"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Membros que usam" />
+
+            <TextView
+                android:id="@+id/txtNoMembers"
+                style="@style/SpenVolt.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Esta residência ainda não tem membros."
+                android:visibility="gone" />
+
+            <!-- ChipGroup só organiza os chips em várias linhas -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/memberChips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtError"
+                style="@style/SpenVolt.Text.Error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Prévia ao vivo + salvar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_blue"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Prévia ao vivo"
+                android:textColor="@color/white_70"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txtPreview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="@color/yellow"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            style="@style/SpenVolt.Button.Green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Salvar dispositivo" />
+    </LinearLayout>
+</LinearLayout>

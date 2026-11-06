@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Conteúdo do diálogo "Adicionar seção" -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo de seção"
+        android:textColor="@color/dark_blue"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Um RadioButton por tipo, criado no código -->
+    <RadioGroup
+        android:id="@+id/radioKinds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/txtSlots"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_insight"
+        android:padding="10dp"
+        android:textColor="@color/dark_blue"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/txtNameLabel"
+        style="@style/SpenVolt.Text.Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome (opcional)" />
+
+    <EditText
+        android:id="@+id/etName"
+        style="@style/SpenVolt.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences"
+        android:maxLength="40" />
+
+    <TextView
+        android:id="@+id/txtPreview"
+        style="@style/SpenVolt.Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+</LinearLayout>

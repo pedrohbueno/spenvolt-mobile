@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Último card da grade: "+ Adicionar membro" -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="168dp"
+    android:layout_margin="6dp"
+    android:background="@drawable/bg_dashed"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center"
+    android:text="+ Adicionar membro"
+    android:textColor="@color/slate_500"
+    android:textSize="14sp" />

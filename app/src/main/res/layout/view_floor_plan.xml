@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Aba Planta: andares, seções coloridas pelo consumo e o painel da seção escolhida -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/SpenVolt.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/SpenVolt.Text.CardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Planta da residência" />
+
+                <TextView
+                    style="@style/SpenVolt.Text.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cores por consumo no mês" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddRoom"
+                style="@style/SpenVolt.Button.Dark.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Seção" />
+        </LinearLayout>
+
+        <!-- "Quartos 1/8 · Banheiros 0/7 ..." -->
+        <TextView
+            android:id="@+id/txtRoomCounts"
+            style="@style/SpenVolt.Text.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- Andares -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/floorChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/txtPlanError"
+            style="@style/SpenVolt.Text.Error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtPlanStatus"
+            style="@style/SpenVolt.Text.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp"
+            android:text="Carregando planta…" />
+
+        <!-- As seções (item_room_tile / item_room_free) entram aqui, 2 por linha -->
+        <LinearLayout
+            android:id="@+id/roomsGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+
+        <!-- Legenda -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/bg_dot"
+                android:backgroundTint="@color/status_ok" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                android:text="Baixo" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/bg_dot"
+                android:backgroundTint="@color/status_warning" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                android:text="Em alerta" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/bg_dot"
+                android:backgroundTint="@color/status_exceeded" />
+
+            <TextView
+                style="@style/SpenVolt.Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Acima do esperado" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtPlanHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_card"
+        android:padding="16dp"
+        android:text="Toque em uma seção da planta para ver e organizar os dispositivos dela."
+        android:textColor="@color/gray_500"
+        android:textSize="13sp" />
+
+    <!-- Painel da seção escolhida -->
+    <LinearLayout
+        android:id="@+id/roomPanel"
+        style="@style/SpenVolt.Card.Dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="18dp"
+        android:visibility="gone">
+
+        <!-- Nome editável: renomeia ao confirmar no teclado ou ao sair do campo -->
+        <EditText
+            android:id="@+id/etRoomName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white_70"
+            android:hint="Nome da seção"
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences"
+            android:maxLength="40"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white_70"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtRoomInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white_70"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/txtRoomKwh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/yellow"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtRoomCost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white_70"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:id="@+id/roomDevicesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+
+        <Spinner
+            android:id="@+id/spinnerAddDevice"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:popupBackground="@color/white" />
+
+        <TextView
+            android:id="@+id/btnRemoveRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="Remover seção"
+            android:textColor="@color/red_soft"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

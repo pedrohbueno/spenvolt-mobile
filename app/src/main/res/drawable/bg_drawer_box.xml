@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Caixa do seletor de residência no menu lateral -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/dark_blue_soft" />
+    <corners android:radius="12dp" />
+</shape>

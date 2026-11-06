@@ -1,0 +1,89 @@
+package com.spenvolt.mobile.session;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Base64;
+
+import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
+
+/**
+ * Guarda a sessão do usuário no aparelho (equivalente ao sessionStorage do site).
+ *
+ * O token JWT da API traz no "payload":
+ *   sub  → e-mail do usuário
+ *   name → nome do usuário
+ *   exp  → quando o token expira (em segundos)
+ */
+public class SessionManager {
+
+    private static final String PREFS = "spenvolt_session";
+    private static final String KEY_TOKEN = "token";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_EXPIRES_AT = "expires_at";
+    private static final String KEY_RESIDENCE_ID = "residence_id";
+
+    private final SharedPreferences prefs;
+
+    public SessionManager(Context context) {
+        prefs = context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    }
+
+    /** Salva o token recebido no login e lê nome, e-mail e validade de dentro dele. */
+    public void saveLogin(String token) {
+        String name = "";
+        String email = "";
+        long expiresAt = 0;
+
+        try {
+            String payload = token.split("\\.")[1];
+            byte[] bytes = Base64.decode(payload, Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+            JSONObject json = new JSONObject(new String(bytes, StandardCharsets.UTF_8));
+            name = json.optString("name", "");
+            email = json.optString("sub", "");
+            expiresAt = json.optLong("exp", 0) * 1000; // segundos → milissegundos
+        } catch (Exception ignored) {
+            // Token em formato inesperado: a sessão expira na hora.
+        }
+
+        prefs.edit()
+                .putString(KEY_TOKEN, token)
+                .putString(KEY_NAME, name)
+                .putString(KEY_EMAIL, email)
+                .putLong(KEY_EXPIRES_AT, expiresAt)
+                .apply();
+    }
+
+    /** true se existe um token que ainda não expirou. */
+    public boolean isLoggedIn() {
+        return getToken() != null && System.currentTimeMillis() < prefs.getLong(KEY_EXPIRES_AT, 0);
+    }
+
+    public String getToken() {
+        return prefs.getString(KEY_TOKEN, null);
+    }
+
+    public String getName() {
+        return prefs.getString(KEY_NAME, "");
+    }
+
+    public String getEmail() {
+        return prefs.getString(KEY_EMAIL, "");
+    }
+
+    /** Residência escolhida no menu lateral (-1 = nenhuma). Vale entre as telas. */
+    public int getSelectedResidenceId() {
+        return prefs.getInt(KEY_RESIDENCE_ID, -1);
+    }
+
+    public void setSelectedResidenceId(int id) {
+        prefs.edit().putInt(KEY_RESIDENCE_ID, id).apply();
+    }
+
+    /** Apaga tudo (logout). */
+    public void clear() {
+        prefs.edit().clear().apply();
+    }
+}

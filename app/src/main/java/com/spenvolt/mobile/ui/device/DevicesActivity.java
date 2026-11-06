@@ -1,0 +1,234 @@
+package com.spenvolt.mobile.ui.device;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.spenvolt.mobile.R;
+import com.spenvolt.mobile.api.ApiCallback;
+import com.spenvolt.mobile.api.DeviceApi;
+import com.spenvolt.mobile.api.MemberApi;
+import com.spenvolt.mobile.model.Device;
+import com.spenvolt.mobile.model.Member;
+import com.spenvolt.mobile.model.Residence;
+import com.spenvolt.mobile.ui.common.BaseActivity;
+import com.spenvolt.mobile.ui.common.SimpleSelection;
+import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.ui.residence.ResidenceFormActivity;
+
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.TreeSet;
+
+/** Dispositivos da residência selecionada, com filtros (devices/page.tsx do site). */
+public class DevicesActivity extends BaseActivity {
+
+    private static final String[] SORT_LABELS = {"Maior consumo", "Menor consumo", "Nome (A–Z)"};
+    private static final int SORT_KWH_DESC = 0;
+    private static final int SORT_KWH_ASC = 1;
+    private static final int SORT_NAME = 2;
+
+    private final List<Device> devices = new ArrayList<>();
+    private final List<Member> members = new ArrayList<>();
+
+    // Filtros atuais
+    private String category = null; // null = todas
+    private int memberId = -1;      // -1 = todos
+    private int sort = SORT_KWH_DESC;
+
+    private Residence residence;
+    private DeviceAdapter adapter;
+    private LinearLayout categoryChips;
+    private Spinner spinnerMember;
+    private Spinner spinnerSort;
+    private TextView txtStatus;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setScreen(R.layout.activity_devices, NAV_DEVICES);
+
+        categoryChips = findViewById(R.id.categoryChips);
+        spinnerMember = findViewById(R.id.spinnerMember);
+        spinnerSort = findViewById(R.id.spinnerSort);
+        txtStatus = findViewById(R.id.txtStatus);
+
+        adapter = new DeviceAdapter(device -> {
+            Intent intent = new Intent(this, DeviceDetailActivity.class);
+            intent.putExtra(DeviceDetailActivity.EXTRA_DEVICE_ID, device.id);
+            startActivity(intent);
+        });
+        RecyclerView recycler = findViewById(R.id.recyclerDevices);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        recycler.setAdapter(adapter);
+
+        setupSortSpinner();
+        findViewById(R.id.fabAdd).setOnClickListener(v -> openNewDevice());
+    }
+
+    // ======================= Residência =======================
+
+    @Override
+    protected void onResidencesLoaded(@Nullable Residence selected) {
+        residence = selected;
+        if (selected == null) {
+            Views.message(txtStatus, null);
+            Views.empty(findViewById(R.id.emptyDevices), true,
+                    "Você ainda não tem residências",
+                    "Cadastre uma residência para adicionar os aparelhos dela.");
+            return;
+        }
+        ((TextView) findViewById(R.id.txtResidence)).setText(selected.name);
+        loadData();
+    }
+
+    @Override
+    protected void onResidenceChanged(Residence selected) {
+        residence = selected;
+        ((TextView) findViewById(R.id.txtResidence)).setText(selected.name);
+        category = null;
+        memberId = -1;
+        loadData();
+    }
+
+    private void loadData() {
+        Views.message(txtStatus, "Carregando dispositivos…");
+        int residenceId = residence.id;
+
+        new DeviceApi(this).findByResidence(residenceId, new ApiCallback<List<Device>>() {
+            @Override
+            public void onSuccess(List<Device> result) {
+                devices.clear();
+                devices.addAll(result);
+                Views.message(txtStatus, null);
+                renderCategories();
+                applyFilters();
+            }
+
+            @Override
+            public void onError(String message) {
+                Views.message(txtStatus, "Não foi possível carregar os dispositivos. Tente novamente.");
+            }
+        });
+
+        new MemberApi(this).findByResidence(residenceId, new ApiCallback<List<Member>>() {
+            @Override
+            public void onSuccess(List<Member> result) {
+                members.clear();
+                members.addAll(result);
+                setupMemberSpinner();
+            }
+
+            @Override
+            public void onError(String message) {
+                members.clear();
+                setupMemberSpinner();
+            }
+        });
+    }
+
+    // ======================= Filtros =======================
+
+    /** Chips "Todas" + uma por categoria cadastrada. */
+    private void renderCategories() {
+        TreeSet<String> names = new TreeSet<>(Collator.getInstance(new Locale("pt", "BR")));
+        for (Device d : devices) {
+            if (d.category != null && !d.category.isEmpty()) names.add(d.category);
+        }
+        if (category != null && !names.contains(category)) category = null;
+
+        categoryChips.removeAllViews();
+        addCategoryChip("Todas", null);
+        for (String name : names) {
+            addCategoryChip(name, name);
+        }
+    }
+
+    private void addCategoryChip(String label, @Nullable String value) {
+        TextView chip = Views.addChip(categoryChips, label);
+        chip.setSelected(value == null ? category == null : value.equals(category));
+        chip.setOnClickListener(v -> {
+            category = value;
+            renderCategories();
+            applyFilters();
+        });
+    }
+
+    private void setupMemberSpinner() {
+        List<String> labels = new ArrayList<>();
+        labels.add("Membro: todos");
+        int selectedPosition = 0;
+        for (int i = 0; i < members.size(); i++) {
+            labels.add(members.get(i).name);
+            if (members.get(i).id == memberId) selectedPosition = i + 1;
+        }
+        if (selectedPosition == 0) memberId = -1;
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.item_spinner, labels);
+        spinnerAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+        spinnerMember.setOnItemSelectedListener(null);
+        spinnerMember.setAdapter(spinnerAdapter);
+        spinnerMember.setSelection(selectedPosition, false);
+        spinnerMember.setOnItemSelectedListener(new SimpleSelection(position -> {
+            memberId = position == 0 ? -1 : members.get(position - 1).id;
+            applyFilters();
+        }));
+    }
+
+    private void setupSortSpinner() {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.item_spinner, SORT_LABELS);
+        spinnerAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+        spinnerSort.setAdapter(spinnerAdapter);
+        spinnerSort.setOnItemSelectedListener(new SimpleSelection(position -> {
+            sort = position;
+            applyFilters();
+        }));
+    }
+
+    /** Aplica categoria, membro e ordenação (lib/devices.ts do site). */
+    private void applyFilters() {
+        List<Device> visible = new ArrayList<>();
+        for (Device d : devices) {
+            boolean categoryOk = category == null || category.equals(d.category);
+            boolean memberOk = memberId == -1 || d.memberIds.contains(memberId);
+            if (categoryOk && memberOk) visible.add(d);
+        }
+
+        Collator collator = Collator.getInstance(new Locale("pt", "BR"));
+        if (sort == SORT_KWH_DESC) {
+            Collections.sort(visible, (a, b) -> Double.compare(b.monthlyKwh, a.monthlyKwh));
+        } else if (sort == SORT_KWH_ASC) {
+            Collections.sort(visible, (a, b) -> Double.compare(a.monthlyKwh, b.monthlyKwh));
+        } else {
+            Collections.sort(visible, (a, b) -> collator.compare(a.displayName(), b.displayName()));
+        }
+
+        adapter.setDevices(visible);
+
+        boolean filtered = !devices.isEmpty();
+        Views.empty(findViewById(R.id.emptyDevices), visible.isEmpty(),
+                filtered ? "Nenhum dispositivo neste filtro" : "Nenhum dispositivo cadastrado ainda",
+                filtered ? "Ajuste os filtros para ver outros aparelhos."
+                        : "Adicione os aparelhos da casa no botão + para acompanhar o consumo de cada um.");
+    }
+
+    private void openNewDevice() {
+        if (residence == null) {
+            startActivity(new Intent(this, ResidenceFormActivity.class));
+            return;
+        }
+        Intent intent = new Intent(this, DeviceFormActivity.class);
+        intent.putExtra(DeviceFormActivity.EXTRA_RESIDENCE_ID, residence.id);
+        startActivity(intent);
+    }
+}

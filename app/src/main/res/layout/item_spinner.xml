@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Item selecionado de um Spinner claro (formulários e filtros) -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableEnd="@drawable/ic_arrow_down"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:textColor="@color/dark_blue"
+    android:textSize="14sp" />

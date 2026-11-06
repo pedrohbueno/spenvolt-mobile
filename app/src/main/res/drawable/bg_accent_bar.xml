@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barrinha abaixo dos títulos: verde → amarelo → azul (igual ao site) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:angle="0"
+        android:startColor="@color/green_button"
+        android:centerColor="@color/yellow"
+        android:endColor="@color/sky" />
+    <corners android:radius="2dp" />
+</shape>

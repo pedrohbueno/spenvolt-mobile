@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chip de filtro/seleção. Selecionado = azul-escuro com texto amarelo (view.setSelected(true)). -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/bg_chip"
+    android:gravity="center"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:textColor="@color/text_selectable"
+    android:textSize="14sp"
+    android:textStyle="bold" />
