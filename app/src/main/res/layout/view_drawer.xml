@@ -87,11 +87,6 @@
         android:text="Membros" />
 
     <TextView
-        android:id="@+id/navEconomize"
-        style="@style/SpenVolt.DrawerItem"
-        android:text="Economize" />
-
-    <TextView
         android:id="@+id/navSettings"
         style="@style/SpenVolt.DrawerItem"
         android:text="Configurações" />

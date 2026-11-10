@@ -136,14 +136,6 @@
                 android:layout_marginTop="10dp" />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAlternatives"
-            style="@style/SpenVolt.Button.Dark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Ver alternativas mais econômicas" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

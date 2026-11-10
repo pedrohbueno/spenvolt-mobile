@@ -8,14 +8,6 @@ import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 
-/**
- * Guarda a sessão do usuário no aparelho (equivalente ao sessionStorage do site).
- *
- * O token JWT da API traz no "payload":
- *   sub  → e-mail do usuário
- *   name → nome do usuário
- *   exp  → quando o token expira (em segundos)
- */
 public class SessionManager {
 
     private static final String PREFS = "spenvolt_session";
@@ -73,7 +65,6 @@ public class SessionManager {
         return prefs.getString(KEY_EMAIL, "");
     }
 
-    /** Residência escolhida no menu lateral (-1 = nenhuma). Vale entre as telas. */
     public int getSelectedResidenceId() {
         return prefs.getInt(KEY_RESIDENCE_ID, -1);
     }
@@ -82,7 +73,6 @@ public class SessionManager {
         prefs.edit().putInt(KEY_RESIDENCE_ID, id).apply();
     }
 
-    /** Apaga tudo (logout). */
     public void clear() {
         prefs.edit().clear().apply();
     }

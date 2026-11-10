@@ -30,7 +30,6 @@ import com.spenvolt.mobile.model.Residence;
 import com.spenvolt.mobile.session.SessionManager;
 import com.spenvolt.mobile.ui.auth.LoginActivity;
 import com.spenvolt.mobile.ui.device.DevicesActivity;
-import com.spenvolt.mobile.ui.economize.EconomizeActivity;
 import com.spenvolt.mobile.ui.home.HomeActivity;
 import com.spenvolt.mobile.ui.member.MembersActivity;
 import com.spenvolt.mobile.ui.profile.ProfileActivity;
@@ -55,8 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static final int NAV_HOME = 1;
     protected static final int NAV_DEVICES = 2;
     protected static final int NAV_MEMBERS = 3;
-    protected static final int NAV_ECONOMIZE = 4;
-    protected static final int NAV_SETTINGS = 5;
+    protected static final int NAV_SETTINGS = 4;
 
     protected SessionManager session;
 
@@ -157,13 +155,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         highlight(R.id.navHome, navItem == NAV_HOME);
         highlight(R.id.navDevices, navItem == NAV_DEVICES);
         highlight(R.id.navMembers, navItem == NAV_MEMBERS);
-        highlight(R.id.navEconomize, navItem == NAV_ECONOMIZE);
         highlight(R.id.navSettings, navItem == NAV_SETTINGS);
 
         findViewById(R.id.navHome).setOnClickListener(v -> openTopLevel(HomeActivity.class));
         findViewById(R.id.navDevices).setOnClickListener(v -> openTopLevel(DevicesActivity.class));
         findViewById(R.id.navMembers).setOnClickListener(v -> openTopLevel(MembersActivity.class));
-        findViewById(R.id.navEconomize).setOnClickListener(v -> openTopLevel(EconomizeActivity.class));
         findViewById(R.id.navSettings).setOnClickListener(v -> openSettings());
 
         TextView avatar = findViewById(R.id.drawerAvatar);
