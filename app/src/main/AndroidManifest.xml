@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpenVolt">
 
-        <!-- Tela inicial: se já existe sessão válida, vai direto para o Início. -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"

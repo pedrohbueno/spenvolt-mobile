@@ -29,19 +29,13 @@ import com.spenvolt.mobile.util.Format;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Adicionar ou editar um dispositivo (DeviceForm.tsx do site).
- *
- * - Sem EXTRA_DEVICE_ID: cria um novo (a residência pode ser escolhida).
- * - Com EXTRA_DEVICE_ID: edita o existente (a residência não muda).
- */
 public class DeviceFormActivity extends BaseActivity {
 
     public static final String EXTRA_DEVICE_ID = "device_id";
     public static final String EXTRA_RESIDENCE_ID = "residence_id";
 
-    private int deviceId;              // -1 = novo
-    private Residence residence;       // residência do aparelho (tarifa para a prévia)
+    private int deviceId;
+    private Residence residence;
     private final List<Member> members = new ArrayList<>();
     private final List<Integer> selectedMemberIds = new ArrayList<>();
 
@@ -73,7 +67,6 @@ public class DeviceFormActivity extends BaseActivity {
         txtError = findViewById(R.id.txtError);
         btnSave = findViewById(R.id.btnSave);
 
-        // A prévia recalcula a cada tecla digitada nesses três campos
         TextWatcher previewWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
@@ -99,11 +92,8 @@ public class DeviceFormActivity extends BaseActivity {
         return deviceId != -1;
     }
 
-    // ======================= Novo: escolher a residência =======================
-
     @Override
     protected void onResidencesLoaded(@Nullable Residence selected) {
-        // Na edição a residência não muda; e só montamos o seletor uma vez.
         if (isEditing() || residence != null) return;
 
         if (residences.isEmpty()) {
@@ -132,8 +122,6 @@ public class DeviceFormActivity extends BaseActivity {
         updatePreview();
         loadMembers();
     }
-
-    // ======================= Edição: carregar o aparelho =======================
 
     private void loadDevice() {
         new DeviceApi(this).findById(deviceId, new ApiCallback<Device>() {
@@ -176,8 +164,6 @@ public class DeviceFormActivity extends BaseActivity {
         });
     }
 
-    // ======================= Membros que usam =======================
-
     private void loadMembers() {
         new MemberApi(this).findByResidence(residence.id, new ApiCallback<List<Member>>() {
             @Override
@@ -196,7 +182,6 @@ public class DeviceFormActivity extends BaseActivity {
     }
 
     private void renderMemberChips() {
-        // Ao trocar de residência, só valem os membros que existem nela.
         List<Integer> valid = new ArrayList<>();
         for (Member m : members) {
             if (selectedMemberIds.contains(m.id)) valid.add(m.id);
@@ -220,8 +205,6 @@ public class DeviceFormActivity extends BaseActivity {
         }
     }
 
-    // ======================= Prévia ao vivo =======================
-
     private void updatePreview() {
         Double power = Format.parseDecimal(Views.text(etPower));
         Double hours = Format.parseDecimal(Views.text(etHours));
@@ -235,8 +218,6 @@ public class DeviceFormActivity extends BaseActivity {
         double cost = kwh * residence.tariff;
         txtPreview.setText(Format.kwh(kwh) + " · " + Format.brl(cost) + "/mês");
     }
-
-    // ======================= Salvar =======================
 
     private void save() {
         String name = Views.text(etName);

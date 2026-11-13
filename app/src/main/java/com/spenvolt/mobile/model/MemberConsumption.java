@@ -3,7 +3,6 @@ package com.spenvolt.mobile.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Consumo do mês atribuído a um membro (GET /api/members/consumption). */
 public class MemberConsumption {
 
     public int memberId;

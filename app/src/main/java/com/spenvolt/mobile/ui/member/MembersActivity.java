@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** Membros da residência selecionada (members/page.tsx do site). */
 public class MembersActivity extends BaseActivity implements MemberAdapter.Listener {
 
     private final List<Member> members = new ArrayList<>();
@@ -52,8 +51,6 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
         recycler.setAdapter(adapter);
     }
 
-    // ======================= Residência =======================
-
     @Override
     protected void onResidencesLoaded(@Nullable Residence selected) {
         residence = selected;
@@ -71,7 +68,6 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
         loadData();
     }
 
-    /** Membros + aparelhos da residência (o consumo de cada membro vem dos aparelhos). */
     private void loadData() {
         ((TextView) findViewById(R.id.txtResidence)).setText(residence.name);
         int residenceId = residence.id;
@@ -111,7 +107,6 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
     private void render() {
         adapter.setData(members, Consumption.usageByMember(devices));
 
-        // Se o membro aberto sumiu da lista, fecha o detalhe
         if (activeMember != null && !containsMember(activeMember.id)) activeMember = null;
         adapter.setSelectedId(activeMember == null ? -1 : activeMember.id);
         renderDetail();
@@ -124,11 +119,8 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
         return false;
     }
 
-    // ======================= Cliques na grade =======================
-
     @Override
     public void onMemberClick(Member member) {
-        // Tocar de novo no mesmo membro fecha o detalhe
         activeMember = activeMember != null && activeMember.id == member.id ? null : member;
         adapter.setSelectedId(activeMember == null ? -1 : activeMember.id);
         renderDetail();
@@ -145,9 +137,6 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
         startActivity(intent);
     }
 
-    // ======================= Detalhe do membro =======================
-
-    /** Barras com a parte de cada aparelho que cabe ao membro (MemberDetail.tsx). */
     private void renderDetail() {
         View detail = findViewById(R.id.memberDetail);
         Views.show(detail, activeMember != null);

@@ -18,7 +18,6 @@ import com.spenvolt.mobile.model.Residence;
 import com.spenvolt.mobile.ui.common.BaseActivity;
 import com.spenvolt.mobile.ui.common.Views;
 
-/** Adicionar membro (members/new/page.tsx do site). */
 public class MemberFormActivity extends BaseActivity {
 
     public static final String EXTRA_RESIDENCE_ID = "residence_id";
@@ -47,7 +46,6 @@ public class MemberFormActivity extends BaseActivity {
         findViewById(R.id.btnCancel).setOnClickListener(v -> finish());
     }
 
-    /** Monta o seletor de residência uma única vez. */
     @Override
     protected void onResidencesLoaded(@Nullable Residence selected) {
         if (spinnerReady) return;

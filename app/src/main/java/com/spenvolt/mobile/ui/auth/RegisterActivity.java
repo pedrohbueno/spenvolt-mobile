@@ -16,7 +16,6 @@ import com.spenvolt.mobile.session.SessionManager;
 import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.ui.home.HomeActivity;
 
-/** Cadastro de usuário. Depois de cadastrar, já faz o login e abre o Início. */
 public class RegisterActivity extends AppCompatActivity {
 
     public static final int MIN_PASSWORD = 6;
@@ -44,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         TextView linkLogin = findViewById(R.id.linkLogin);
         AuthScreen.setupLink(this, linkLogin, "Já tem conta?", "Entrar");
-        linkLogin.setOnClickListener(v -> finish()); // volta para o login
+        linkLogin.setOnClickListener(v -> finish());
     }
 
     private void register() {
@@ -52,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
         String email = Views.text(etEmail);
         String password = etPassword.getText().toString();
 
-        // Validações iguais às do mockup
         if (name.isEmpty()) {
             etName.setError("Informe seu nome");
             return;
@@ -96,7 +94,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                // Conta criada, mas o login falhou: volta para o login.
                 finish();
             }
         });

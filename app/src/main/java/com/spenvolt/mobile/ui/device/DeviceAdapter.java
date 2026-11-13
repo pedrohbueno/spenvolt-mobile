@@ -15,7 +15,6 @@ import com.spenvolt.mobile.util.Format;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Lista de dispositivos em cards (item_device_card). */
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
     public interface OnDeviceClick {
@@ -29,7 +28,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         this.onClick = onClick;
     }
 
-    /** Troca a lista mostrada. */
     public void setDevices(List<Device> newDevices) {
         devices.clear();
         devices.addAll(newDevices);
@@ -61,7 +59,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         return devices.size();
     }
 
-    /** "Samsung · Clima" (só o que estiver preenchido). */
     private String subtitle(Device d) {
         StringBuilder text = new StringBuilder();
         if (d.brand != null) text.append(d.brand);

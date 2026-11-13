@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Aba Planta: andares, seções coloridas pelo consumo e o painel da seção escolhida -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -43,7 +42,6 @@
                 android:text="+ Seção" />
         </LinearLayout>
 
-        <!-- "Quartos 1/8 · Banheiros 0/7 ..." -->
         <TextView
             android:id="@+id/txtRoomCounts"
             style="@style/SpenVolt.Text.Caption"
@@ -51,7 +49,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
 
-        <!-- Andares -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +79,6 @@
             android:paddingBottom="32dp"
             android:text="Carregando planta…" />
 
-        <!-- As seções (item_room_tile / item_room_free) entram aqui, 2 por linha -->
         <LinearLayout
             android:id="@+id/roomsGrid"
             android:layout_width="match_parent"
@@ -90,7 +86,6 @@
             android:layout_marginTop="12dp"
             android:orientation="vertical" />
 
-        <!-- Legenda -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -152,7 +147,6 @@
         android:textColor="@color/gray_500"
         android:textSize="13sp" />
 
-    <!-- Painel da seção escolhida -->
     <LinearLayout
         android:id="@+id/roomPanel"
         style="@style/SpenVolt.Card.Dark"
@@ -162,7 +156,6 @@
         android:padding="18dp"
         android:visibility="gone">
 
-        <!-- Nome editável: renomeia ao confirmar no teclado ou ao sair do campo -->
         <EditText
             android:id="@+id/etRoomName"
             android:layout_width="match_parent"

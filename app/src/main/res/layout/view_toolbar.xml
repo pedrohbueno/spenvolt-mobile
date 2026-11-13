@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Barra do topo: menu à esquerda, logo no centro, perfil à direita -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/appToolbar"
     android:layout_width="match_parent"
@@ -69,7 +68,6 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- Linha amarela abaixo da barra, igual ao site -->
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"

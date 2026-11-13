@@ -6,13 +6,12 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
-/** Item do histórico de alterações (HistoryResponseDTO da API). */
 public class History {
 
     public int id;
-    public String type;        // ex.: "DEVICE_ADDED", "RESIDENCE_UPDATED"
+    public String type;
     public String entityName;
-    public String createdAt;   // ex.: "2026-10-27T14:30:00"
+    public String createdAt;
 
     public static History fromJson(JSONObject json) throws JSONException {
         History h = new History();
@@ -23,10 +22,6 @@ public class History {
         return h;
     }
 
-    /**
-     * A data costuma vir como texto ("2026-10-27T14:30:00"), mas dependendo da
-     * configuração do Jackson na API pode vir como lista ([2026, 10, 27, 14, 30]).
-     */
     private static String readDate(JSONObject json) {
         JSONArray parts = json.optJSONArray("createdAt");
         if (parts != null && parts.length() >= 3) {
@@ -35,7 +30,6 @@ public class History {
         return json.optString("createdAt", "");
     }
 
-    /** "Adicionado: Dispositivo - Geladeira" (mesmo texto do site). */
     public String label() {
         String[] parts = type.split("_");
         String entity = parts.length > 0 ? parts[0] : "";

@@ -16,7 +16,6 @@ import com.spenvolt.mobile.session.SessionManager;
 import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.ui.home.HomeActivity;
 
-/** Tela de login. É a primeira tela do app; se já houver sessão válida, pula direto para o Início. */
 public class LoginActivity extends AppCompatActivity {
 
     private SessionManager session;

@@ -37,12 +37,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/** Tela inicial (porta de app/(app)/page.tsx do site). */
 public class HomeActivity extends BaseActivity {
 
     private static final int TOP_DEVICES = 5;
 
-    /** Critério do comparativo entre residências. */
     private enum Metric { LIMIT, KWH, COST }
 
     private final List<Device> devices = new ArrayList<>();
@@ -82,13 +80,11 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        super.onResume(); // carrega as residências → onResidencesLoaded
+        super.onResume();
         loadDevices();
         loadMemberUsage();
         loadHistory();
     }
-
-    // ======================= Carregamento =======================
 
     @Override
     protected void onResidencesLoaded(@Nullable Residence selected) {
@@ -143,8 +139,6 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-    // ======================= Banner =======================
-
     private void renderBanner() {
         double kwh = 0;
         double cost = 0;
@@ -172,8 +166,6 @@ public class HomeActivity extends BaseActivity {
         setText(R.id.txtTotalCost, Format.brl(cost));
         setText(R.id.txtResidenceCount, String.valueOf(residences.size()));
     }
-
-    // ======================= Minhas residências =======================
 
     private void renderResidences() {
         residencesContainer.removeAllViews();
@@ -229,8 +221,6 @@ public class HomeActivity extends BaseActivity {
         startActivity(new Intent(this, ResidenceFormActivity.class));
     }
 
-    // ======================= Quem mais consome =======================
-
     private void renderTopDevices() {
         topDevicesContainer.removeAllViews();
         List<Device> sorted = new ArrayList<>(devices);
@@ -268,8 +258,6 @@ public class HomeActivity extends BaseActivity {
         return "";
     }
 
-    // ======================= Consumo por membro =======================
-
     private void renderMemberUsage(List<MemberConsumption> members) {
         memberUsageContainer.removeAllViews();
         if (members.isEmpty()) {
@@ -291,15 +279,12 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    // ======================= Comparativo entre residências =======================
-
-    /** Uma linha do comparativo já calculada. */
     private static class ComparisonRow {
         Residence residence;
         Status status;
-        double value;   // % do limite, kWh ou R$
-        Double limit;   // na mesma unidade do valor; null = sem limite
-        double share;   // % do consumo total
+        double value;
+        Double limit;
+        double share;
         int deviceCount;
         Device heaviest;
     }
@@ -386,7 +371,6 @@ public class HomeActivity extends BaseActivity {
             rows.add(row);
         }
 
-        // Em "% do limite", quem não tem limite vai para o fim.
         Collections.sort(rows, (a, b) -> {
             if (metric == Metric.LIMIT && (a.limit == null) != (b.limit == null)) {
                 return a.limit == null ? 1 : -1;
@@ -404,7 +388,6 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    /** "274 de 220 kWh · 19% do total · 8 dispositivos · maior: Ar-condicionado (44% da casa)" */
     private String comparisonDetails(ComparisonRow row) {
         Residence r = row.residence;
         StringBuilder text = new StringBuilder();
@@ -430,7 +413,6 @@ public class HomeActivity extends BaseActivity {
         return text.toString();
     }
 
-    /** Frase-resumo: quem precisa de atenção e quem mais consome. */
     private String comparisonInsight() {
         List<Residence> exceeded = new ArrayList<>();
         List<Residence> warning = new ArrayList<>();
@@ -462,8 +444,6 @@ public class HomeActivity extends BaseActivity {
         return text.toString().trim();
     }
 
-    // ======================= Histórico =======================
-
     private void renderHistory(List<History> items) {
         historyContainer.removeAllViews();
         if (items.isEmpty()) {
@@ -483,9 +463,6 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    // ======================= Apoio =======================
-
-    /** Escreve o texto e garante que o TextView está visível. */
     private void setText(int viewId, String text) {
         TextView view = findViewById(viewId);
         view.setText(text);

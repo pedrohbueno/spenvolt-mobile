@@ -3,10 +3,6 @@ package com.spenvolt.mobile.ui.common;
 import android.view.View;
 import android.widget.AdapterView;
 
-/**
- * Listener de Spinner que só avisa a posição escolhida.
- * Uso: spinner.setOnItemSelectedListener(new SimpleSelection(position -> { ... }));
- */
 public class SimpleSelection implements AdapterView.OnItemSelectedListener {
 
     public interface OnSelected {

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Membros da residência selecionada -->
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -35,7 +34,6 @@
             android:text="Carregando membros…"
             android:textSize="13sp" />
 
-        <!-- Grade 2 colunas: cards dos membros + card "+ Adicionar membro" -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerMembers"
             android:layout_width="match_parent"
@@ -43,7 +41,6 @@
             android:layout_marginTop="12dp"
             android:nestedScrollingEnabled="false" />
 
-        <!-- Dispositivos do membro tocado -->
         <LinearLayout
             android:id="@+id/memberDetail"
             style="@style/SpenVolt.Card"

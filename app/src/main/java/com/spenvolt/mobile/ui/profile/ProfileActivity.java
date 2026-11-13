@@ -15,7 +15,6 @@ import com.spenvolt.mobile.ui.common.BaseActivity;
 import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.util.Format;
 
-/** Perfil do usuário (profile/page.tsx + ProfileCard.tsx do site). */
 public class ProfileActivity extends BaseActivity {
 
     private EditText etCurrent;

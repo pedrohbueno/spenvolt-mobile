@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bolinha da legenda da planta (cor trocada com backgroundTint) -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <solid android:color="@color/status_ok" />
     <size android:width="10dp" android:height="10dp" />

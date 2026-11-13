@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Conteúdo do diálogo "Adicionar seção" -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,7 +15,6 @@
         android:textSize="14sp"
         android:textStyle="bold" />
 
-    <!-- Um RadioButton por tipo, criado no código -->
     <RadioGroup
         android:id="@+id/radioKinds"
         android:layout_width="match_parent"

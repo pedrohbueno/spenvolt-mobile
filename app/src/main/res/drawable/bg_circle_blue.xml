@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Círculo com o gradiente azul da logo (avatares de membros) -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <gradient android:angle="315" android:startColor="@color/blue_start" android:endColor="@color/blue_end" />
 </shape>

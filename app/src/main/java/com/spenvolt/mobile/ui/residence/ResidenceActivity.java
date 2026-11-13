@@ -28,7 +28,6 @@ import com.spenvolt.mobile.util.Format;
 
 import java.util.List;
 
-/** Uma residência com as abas Dispositivos, Membros e Planta (residences/[id]/page.tsx do site). */
 public class ResidenceActivity extends BaseActivity {
 
     public static final String EXTRA_RESIDENCE_ID = "residence_id";
@@ -49,9 +48,8 @@ public class ResidenceActivity extends BaseActivity {
         setScreen(R.layout.activity_residence, NAV_NONE);
 
         residenceId = getIntent().getIntExtra(EXTRA_RESIDENCE_ID, -1);
-        session.setSelectedResidenceId(residenceId); // o menu passa a mostrar esta residência
+        session.setSelectedResidenceId(residenceId);
 
-        // Lista de dispositivos
         deviceAdapter = new DeviceAdapter(this::openDevice);
         RecyclerView recyclerDevices = findViewById(R.id.recyclerDevices);
         recyclerDevices.setLayoutManager(new LinearLayoutManager(this));
@@ -61,7 +59,6 @@ public class ResidenceActivity extends BaseActivity {
         floorPlan = new FloorPlanSection(this, findViewById(R.id.panelPlan), residenceId);
         floorPlan.load();
 
-        // Abas
         findViewById(R.id.tabDevices).setOnClickListener(v -> selectTab(Tab.DEVICES));
         findViewById(R.id.tabMembers).setOnClickListener(v -> selectTab(Tab.MEMBERS));
         findViewById(R.id.tabPlan).setOnClickListener(v -> selectTab(Tab.PLAN));
@@ -86,8 +83,6 @@ public class ResidenceActivity extends BaseActivity {
         loadMembers();
     }
 
-    // ======================= Abas =======================
-
     private void selectTab(Tab newTab) {
         tab = newTab;
         findViewById(R.id.tabDevices).setSelected(tab == Tab.DEVICES);
@@ -98,7 +93,6 @@ public class ResidenceActivity extends BaseActivity {
         Views.show(findViewById(R.id.panelMembers), tab == Tab.MEMBERS);
         Views.show(findViewById(R.id.panelPlan), tab == Tab.PLAN);
 
-        // O "+" adiciona dispositivo ou membro; na planta usa-se o botão "+ Seção".
         if (tab == Tab.PLAN) fabAdd.hide();
         else fabAdd.show();
     }
@@ -114,8 +108,6 @@ public class ResidenceActivity extends BaseActivity {
         }
         startActivity(intent);
     }
-
-    // ======================= Carregamento =======================
 
     private void loadResidence() {
         new ResidenceApi(this).findById(residenceId, new ApiCallback<Residence>() {
@@ -179,8 +171,6 @@ public class ResidenceActivity extends BaseActivity {
             membersContainer.addView(row);
         }
     }
-
-    // ======================= Apoio =======================
 
     private void openDevice(Device device) {
         Intent intent = new Intent(this, DeviceDetailActivity.class);

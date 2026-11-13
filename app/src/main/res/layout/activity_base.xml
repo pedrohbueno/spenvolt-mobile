@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Esqueleto de todas as telas internas (BaseActivity):
-  barra do topo + conteúdo da tela + menu lateral.
-  O layout de cada tela é colocado dentro de @id/screenContent.
--->
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"

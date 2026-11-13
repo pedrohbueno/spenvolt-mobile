@@ -23,14 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Faz as requisições HTTP para a spenvolt-api usando Volley.
- *
- * - Monta a URL com BuildConfig.API_URL (definido no app/build.gradle.kts).
- * - Envia o token JWT no cabeçalho Authorization.
- * - Devolve o corpo da resposta como texto; as classes *Api convertem para os modelos.
- * - Se a API responder 401 (token vencido), volta para a tela de login.
- */
 public class ApiClient {
 
     private static final int TIMEOUT_MS = 15_000;
@@ -47,7 +39,6 @@ public class ApiClient {
         session = new SessionManager(appContext);
     }
 
-    /** Uma única fila de requisições para o app inteiro. */
     public static synchronized ApiClient getInstance(Context context) {
         if (instance == null) {
             instance = new ApiClient(context);
@@ -101,7 +92,6 @@ public class ApiClient {
                 return body == null ? null : body.toString().getBytes(StandardCharsets.UTF_8);
             }
 
-            // A API não informa o charset; sem isto os acentos ("Residência") viriam quebrados.
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 String text = new String(response.data, StandardCharsets.UTF_8);
@@ -117,7 +107,6 @@ public class ApiClient {
     private void handleError(VolleyError error, ApiCallback<String> callback) {
         int status = error.networkResponse != null ? error.networkResponse.statusCode : -1;
 
-        // Token vencido ou inválido: limpa a sessão e volta para o login.
         if (status == 401 && session.getToken() != null) {
             session.clear();
             Toast.makeText(appContext, "Sua sessão expirou. Entre novamente.", Toast.LENGTH_LONG).show();

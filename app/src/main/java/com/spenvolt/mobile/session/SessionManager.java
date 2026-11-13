@@ -23,7 +23,6 @@ public class SessionManager {
         prefs = context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    /** Salva o token recebido no login e lê nome, e-mail e validade de dentro dele. */
     public void saveLogin(String token) {
         String name = "";
         String email = "";
@@ -35,9 +34,8 @@ public class SessionManager {
             JSONObject json = new JSONObject(new String(bytes, StandardCharsets.UTF_8));
             name = json.optString("name", "");
             email = json.optString("sub", "");
-            expiresAt = json.optLong("exp", 0) * 1000; // segundos → milissegundos
+            expiresAt = json.optLong("exp", 0) * 1000;
         } catch (Exception ignored) {
-            // Token em formato inesperado: a sessão expira na hora.
         }
 
         prefs.edit()
@@ -48,7 +46,6 @@ public class SessionManager {
                 .apply();
     }
 
-    /** true se existe um token que ainda não expirou. */
     public boolean isLoggedIn() {
         return getToken() != null && System.currentTimeMillis() < prefs.getLong(KEY_EXPIRES_AT, 0);
     }

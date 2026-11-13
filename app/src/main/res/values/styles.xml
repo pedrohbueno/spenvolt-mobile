@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Bases vazias: os estilos abaixo herdam pelo nome (SpenVolt.Text.Title herda de SpenVolt.Text) -->
     <style name="SpenVolt" />
     <style name="SpenVolt.Text" />
 
-    <!-- ===== Textos ===== -->
-
-    <!-- Título grande da tela ("Dispositivos", "Membros"...) -->
     <style name="SpenVolt.Text.Title">
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text</item>
     </style>
 
-    <!-- Título de um card ("Quem mais consome") -->
     <style name="SpenVolt.Text.CardTitle">
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/dark_blue</item>
     </style>
 
-    <!-- Rótulo acima de um campo -->
     <style name="SpenVolt.Text.Label">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/slate_500</item>
@@ -29,39 +23,32 @@
         <item name="android:layout_marginBottom">4dp</item>
     </style>
 
-    <!-- Texto pequeno e cinza -->
     <style name="SpenVolt.Text.Caption">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/gray_500</item>
     </style>
 
-    <!-- Texto normal -->
     <style name="SpenVolt.Text.Body">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/dark_blue</item>
     </style>
 
-    <!-- Número em destaque (kWh, R$) -->
     <style name="SpenVolt.Text.Stat">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/dark_blue</item>
     </style>
 
-    <!-- Número em destaque sobre fundo escuro -->
     <style name="SpenVolt.Text.Stat.Yellow">
         <item name="android:textColor">@color/yellow</item>
     </style>
 
-    <!-- Mensagem de erro -->
     <style name="SpenVolt.Text.Error">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/red_600</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_marginTop">8dp</item>
     </style>
-
-    <!-- ===== Campos ===== -->
 
     <style name="SpenVolt.Input">
         <item name="android:background">@drawable/bg_input</item>
@@ -74,9 +61,6 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!-- ===== Botões ===== -->
-
-    <!-- Verde: ação principal dos formulários (Entrar, Salvar) -->
     <style name="SpenVolt.Button.Green" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/green_button</item>
         <item name="android:textColor">@color/dark_blue</item>
@@ -88,7 +72,6 @@
         <item name="cornerRadius">12dp</item>
     </style>
 
-    <!-- Azul-escuro com texto amarelo: ações de navegação (+ Nova residência) -->
     <style name="SpenVolt.Button.Dark" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/dark_blue</item>
         <item name="android:textColor">@color/yellow</item>
@@ -100,7 +83,6 @@
         <item name="cornerRadius">12dp</item>
     </style>
 
-    <!-- Versão pequena do botão escuro, usada em cabeçalhos -->
     <style name="SpenVolt.Button.Dark.Small">
         <item name="android:textSize">13sp</item>
         <item name="android:minHeight">40dp</item>
@@ -109,7 +91,6 @@
         <item name="cornerRadius">10dp</item>
     </style>
 
-    <!-- Contorno cinza: ação secundária (Cancelar, Editar) -->
     <style name="SpenVolt.Button.Outline" parent="Widget.Material3.Button.OutlinedButton">
         <item name="backgroundTint">@color/white</item>
         <item name="strokeColor">@color/slate_300</item>
@@ -122,15 +103,11 @@
         <item name="cornerRadius">12dp</item>
     </style>
 
-    <!-- Contorno vermelho: ação perigosa (Remover, Sair) -->
     <style name="SpenVolt.Button.Danger" parent="SpenVolt.Button.Outline">
         <item name="strokeColor">@color/status_exceeded</item>
         <item name="android:textColor">@color/red_600</item>
     </style>
 
-    <!-- ===== Containers ===== -->
-
-    <!-- Card branco arredondado -->
     <style name="SpenVolt.Card">
         <item name="android:background">@drawable/bg_card</item>
         <item name="android:padding">16dp</item>
@@ -138,12 +115,10 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <!-- Card azul-escuro (banner do Início, prévia ao vivo) -->
     <style name="SpenVolt.Card.Dark">
         <item name="android:background">@drawable/bg_card_dark</item>
     </style>
 
-    <!-- Barrinha colorida abaixo dos títulos (verde → amarelo → azul) -->
     <style name="SpenVolt.AccentBar">
         <item name="android:layout_width">44dp</item>
         <item name="android:layout_height">4dp</item>
@@ -151,7 +126,6 @@
         <item name="android:background">@drawable/bg_accent_bar</item>
     </style>
 
-    <!-- Item do menu lateral -->
     <style name="SpenVolt.DrawerItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

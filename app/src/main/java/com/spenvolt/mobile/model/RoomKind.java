@@ -1,10 +1,5 @@
 package com.spenvolt.mobile.model;
 
-/**
- * Tipos de seção da planta (igual a lib/house-plan.ts do site).
- * Cada tipo tem uma área média (para calcular a densidade de consumo)
- * e um máximo de seções por andar.
- */
 public enum RoomKind {
 
     SALA("Sala", "Salas", 18, 3),
@@ -15,7 +10,7 @@ public enum RoomKind {
 
     public final String label;
     public final String plural;
-    public final double area;     // m²
+    public final double area;
     public final int maxPerFloor;
 
     RoomKind(String label, String plural, double area, int maxPerFloor) {
@@ -25,12 +20,10 @@ public enum RoomKind {
         this.maxPerFloor = maxPerFloor;
     }
 
-    /** "Quarto 2" (ou só "Cozinha" quando o tipo só aceita uma). */
     public String defaultName(int slot) {
         return maxPerFloor > 1 ? label + " " + slot : label;
     }
 
-    /** Converte o texto da API ("QUARTO") no enum; desconhecido vira OUTROS. */
     public static RoomKind from(String value) {
         try {
             return RoomKind.valueOf(value);

@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Aparelho de uma residência (DeviceResponseDTO da API). */
 public class Device {
 
     public int id;
@@ -17,14 +16,14 @@ public class Device {
     public String brand;
     public String model;
     public String category;
-    public Double power;          // W
+    public Double power;
     public Double hoursPerDay;
     public Integer daysPerMonth;
     public String imageUrl;
     public int residenceId;
     public List<Integer> memberIds = new ArrayList<>();
-    public double monthlyKwh;     // calculado pela API
-    public double monthlyCost;    // calculado pela API
+    public double monthlyKwh;
+    public double monthlyCost;
 
     public static Device fromJson(JSONObject json) throws JSONException {
         Device d = new Device();
@@ -44,7 +43,6 @@ public class Device {
         return d;
     }
 
-    /** Corpo do POST/PUT /api/devices. O dono vem do token; consumo e custo a API calcula. */
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         Json.put(json, "name", name);
@@ -64,7 +62,6 @@ public class Device {
         return name == null || name.isEmpty() ? "Sem nome" : name;
     }
 
-    /** "Geladeira Brastemp" */
     public String fullName() {
         return brand == null || brand.isEmpty() ? displayName() : displayName() + " " + brand;
     }

@@ -20,49 +20,41 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.util.Consumption;
 
-/** Pequenas funções de tela usadas em vários lugares. */
 public final class Views {
 
     private Views() {
     }
 
-    /** Texto digitado no campo, sem espaços nas pontas. */
     public static String text(EditText field) {
         return field.getText().toString().trim();
     }
 
-    /** Texto do campo ou null se estiver vazio (para campos opcionais). */
     public static String textOrNull(EditText field) {
         String value = text(field);
         return value.isEmpty() ? null : value;
     }
 
-    /** Mostra ou esconde uma view. */
     public static void show(View view, boolean visible) {
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    /** Mostra o card tracejado de "lista vazia" (view_empty) com o título e o texto dados. */
     public static void empty(View emptyView, boolean visible, String title, String text) {
         show(emptyView, visible);
         ((TextView) emptyView.findViewById(R.id.txtEmptyTitle)).setText(title);
         ((TextView) emptyView.findViewById(R.id.txtEmptyText)).setText(text);
     }
 
-    /** Mostra uma mensagem (ou esconde o TextView se a mensagem for null). */
     public static void message(TextView view, String message) {
         view.setText(message);
         show(view, message != null);
     }
 
-    /** Desabilita o botão e troca o texto enquanto a API responde. */
     public static void loading(MaterialButton button, boolean loading, String loadingText, String normalText) {
         button.setEnabled(!loading);
         button.setAlpha(loading ? 0.6f : 1f);
         button.setText(loading ? loadingText : normalText);
     }
 
-    /** Pinta um selo (bg_pill) com a cor do status. */
     public static void statusBadge(TextView badge, Consumption.Status status) {
         Context context = badge.getContext();
         badge.setText(status.label);
@@ -70,7 +62,6 @@ public final class Views {
         badge.setTextColor(ContextCompat.getColor(context, status.textColorRes));
     }
 
-    /** Cria um chip (TextView com bg_chip) dentro do container. */
     public static TextView addChip(ViewGroup container, String label) {
         TextView chip = (TextView) LayoutInflater.from(container.getContext())
                 .inflate(R.layout.item_chip, container, false);
@@ -79,7 +70,6 @@ public final class Views {
         return chip;
     }
 
-    /** Acrescenta um trecho colorido a um texto (ex.: "Volt" em amarelo). colorRes = 0 mantém a cor. */
     public static SpannableStringBuilder append(Context context, SpannableStringBuilder text,
                                                 String part, int colorRes, boolean bold) {
         int start = text.length();
@@ -94,7 +84,6 @@ public final class Views {
         return text;
     }
 
-    /** Pergunta "tem certeza?" antes de uma ação perigosa. */
     public static void confirm(Context context, String title, String message, String confirmLabel, Runnable onConfirm) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(title)

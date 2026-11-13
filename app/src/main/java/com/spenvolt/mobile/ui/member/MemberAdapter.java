@@ -18,10 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Grade de membros. O último item é sempre o card "+ Adicionar membro".
- * Por isso há dois tipos de view: TYPE_MEMBER e TYPE_ADD.
- */
 public class MemberAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface Listener {
@@ -50,7 +46,6 @@ public class MemberAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    /** Destaca o membro escolhido (-1 = nenhum). */
     public void setSelectedId(int id) {
         selectedId = id;
         notifyDataSetChanged();
@@ -58,7 +53,7 @@ public class MemberAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return members.size() + 1; // + o card de adicionar
+        return members.size() + 1;
     }
 
     @Override
@@ -93,7 +88,6 @@ public class MemberAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         h.txtEmail.setText(m.email);
         h.txtKwh.setText(Format.kwh(u.kwh));
         h.txtCost.setText(Format.brl(u.cost) + " atribuído");
-        // Card escolhido fica um pouco mais "alto"
         h.itemView.setElevation(m.id == selectedId ? 10f : 2f);
         h.itemView.setOnClickListener(v -> listener.onMemberClick(m));
     }

@@ -8,10 +8,6 @@ import com.spenvolt.mobile.model.Residence;
 import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.util.Format;
 
-/**
- * Lê e preenche os campos de view_residence_fields.xml.
- * Usado em "Criar residência" e em "Configurações".
- */
 class ResidenceFields {
 
     private final EditText etName;
@@ -30,7 +26,6 @@ class ResidenceFields {
         etCostLimit = activity.findViewById(R.id.etCostLimit);
     }
 
-    /** Preenche os campos com os dados atuais (Configurações). */
     void fill(Residence r) {
         etName.setText(r.name);
         etAddress.setText(r.address);
@@ -40,11 +35,6 @@ class ResidenceFields {
         etCostLimit.setText(Format.input(r.monthlyCostLimit));
     }
 
-    /**
-     * Valida e copia os campos para a residência.
-     * Devolve uma mensagem de erro, ou null se estiver tudo certo.
-     * Campos opcionais vazios viram null (iguais ao site).
-     */
     String readInto(Residence r) {
         String name = Views.text(etName);
         String address = Views.text(etAddress);
