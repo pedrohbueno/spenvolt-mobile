@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Membro em lista (aba Membros da residência) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/SpenVolt.Card"
     android:layout_width="match_parent"

@@ -15,7 +15,6 @@
 
         <include layout="@layout/view_brand_header" />
 
-        <!-- Card do formulário -->
         <LinearLayout
             style="@style/SpenVolt.Card"
             android:layout_width="match_parent"

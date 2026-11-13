@@ -22,16 +22,14 @@ import com.spenvolt.mobile.util.Format;
 
 import java.util.List;
 
-/** Diálogo "Adicionar seção" (porta de AddRoomDialog.tsx do site). */
 final class AddRoomDialog {
 
-    /** Recebe a escolha do usuário quando ele confirma. */
     interface Listener {
         void onConfirm(RoomKind kind, int slot, String name);
     }
 
-    private final List<Room> rooms;          // seções do andar atual
-    private final RoomKind clickedKind;      // vaga tocada na planta (pode ser null)
+    private final List<Room> rooms;
+    private final RoomKind clickedKind;
     private final int clickedSlot;
 
     private RoomKind kind;
@@ -48,7 +46,6 @@ final class AddRoomDialog {
         this.clickedSlot = clickedSlot;
     }
 
-    /** Abre o diálogo. clickedKind/clickedSlot vêm da vaga livre tocada (ou null/-1). */
     static void show(Context context, List<Room> rooms, @Nullable RoomKind clickedKind, int clickedSlot, Listener listener) {
         new AddRoomDialog(rooms, clickedKind, clickedSlot).open(context, listener);
     }
@@ -61,7 +58,6 @@ final class AddRoomDialog {
         etName = view.findViewById(R.id.etName);
         txtPreview = view.findViewById(R.id.txtPreview);
 
-        // Tipo inicial: o da vaga tocada, ou o primeiro que ainda tem vaga.
         if (clickedKind != null && FloorSlots.free(clickedKind, rooms) > 0) {
             kind = clickedKind;
         } else {
@@ -73,7 +69,6 @@ final class AddRoomDialog {
             }
         }
 
-        // Um RadioButton por tipo; tipos sem vaga ficam desabilitados.
         for (RoomKind k : RoomKind.values()) {
             int free = FloorSlots.free(k, rooms);
             RadioButton radio = new RadioButton(context);
@@ -98,7 +93,7 @@ final class AddRoomDialog {
                 .setTitle("Adicionar seção")
                 .setView(view)
                 .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Adicionar", null) // o clique é tratado abaixo para validar antes de fechar
+                .setPositiveButton("Adicionar", null)
                 .create();
         dialog.show();
 
@@ -111,14 +106,12 @@ final class AddRoomDialog {
         refresh();
     }
 
-    /** Número que a nova seção vai ocupar. */
     private int slot() {
         if (kind == null) return -1;
         if (kind == clickedKind && FloorSlots.isFree(kind, clickedSlot, rooms)) return clickedSlot;
         return FloorSlots.nextFree(kind, rooms);
     }
 
-    /** "Outros" precisa de nome (ex.: Escritório). */
     private boolean canConfirm() {
         return kind != RoomKind.OUTROS || !etName.getText().toString().trim().isEmpty();
     }
@@ -128,7 +121,6 @@ final class AddRoomDialog {
         return typed.isEmpty() ? kind.defaultName(slot) : typed;
     }
 
-    /** Atualiza os textos de vagas e a prévia sempre que algo muda. */
     private void refresh() {
         if (kind == null) {
             txtSlots.setText("Todos os slots deste andar estão ocupados.");

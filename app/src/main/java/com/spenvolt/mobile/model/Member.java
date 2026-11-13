@@ -5,7 +5,6 @@ import com.spenvolt.mobile.api.Json;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Pessoa que mora em uma residência (MemberResponseDTO da API). */
 public class Member {
 
     public int id;
@@ -24,7 +23,6 @@ public class Member {
         return m;
     }
 
-    /** Corpo do POST /api/members. */
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         Json.put(json, "name", name);
@@ -34,7 +32,6 @@ public class Member {
         return json;
     }
 
-    /** Usado pelo Spinner de filtro. */
     @Override
     public String toString() {
         return name;

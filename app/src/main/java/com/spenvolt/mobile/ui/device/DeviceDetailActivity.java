@@ -20,7 +20,6 @@ import com.spenvolt.mobile.util.Format;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Detalhe de um dispositivo (devices/[id]/page.tsx do site). */
 public class DeviceDetailActivity extends BaseActivity {
 
     public static final String EXTRA_DEVICE_ID = "device_id";
@@ -46,7 +45,7 @@ public class DeviceDetailActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadDevice(); // recarrega ao voltar da edição
+        loadDevice();
     }
 
     private void loadDevice() {
@@ -73,7 +72,6 @@ public class DeviceDetailActivity extends BaseActivity {
         ((TextView) findViewById(R.id.txtCost)).setText(Format.brl(device.monthlyCost));
     }
 
-    /** "Cozinha · CRM50 · 150 W · 24 h/dia · 30 dias/mês" */
     private String specs(Device d) {
         List<String> parts = new ArrayList<>();
         if (d.category != null) parts.add(d.category);
@@ -84,7 +82,6 @@ public class DeviceDetailActivity extends BaseActivity {
         return android.text.TextUtils.join(" · ", parts);
     }
 
-    /** Busca os membros da residência e mostra só os que usam este aparelho. */
     private void loadMembers() {
         new MemberApi(this).findByResidence(device.residenceId, new ApiCallback<List<Member>>() {
             @Override
@@ -110,7 +107,6 @@ public class DeviceDetailActivity extends BaseActivity {
         });
     }
 
-    /** Abre o Economize já pesquisando pelo nome do aparelho. */
     private void openAlternatives() {
         if (device == null) return;
         Intent intent = new Intent(this, EconomizeActivity.class);

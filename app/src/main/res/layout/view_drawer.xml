@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Menu lateral: residência selecionada, telas, perfil e sair -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerPanel"
     android:layout_width="300dp"
@@ -10,7 +9,6 @@
     android:focusable="true"
     android:orientation="vertical">
 
-    <!-- Logo -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +40,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Residência selecionada (vale para Dispositivos, Membros, Economize e Configurações) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

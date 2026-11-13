@@ -16,7 +16,6 @@ android {
 
     buildTypes{
         debug {
-            // API rodando no seu PC (emulador)
             buildConfigField("String", "API_URL", "\"http://192.168.1.104:8080\"")
         }
         release {

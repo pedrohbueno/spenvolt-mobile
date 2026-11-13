@@ -15,13 +15,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.ui.common.Views;
 
-/** Partes em comum entre as telas de login e de cadastro. */
 final class AuthScreen {
 
     private AuthScreen() {
     }
 
-    /** Fundo azul-escuro de ponta a ponta, respeitando as barras do Android. */
     static void setupWindow(ComponentActivity activity) {
         EdgeToEdge.enable(activity,
                 SystemBarStyle.dark(Color.TRANSPARENT),
@@ -33,7 +31,6 @@ final class AuthScreen {
         });
     }
 
-    /** "Energia sob controle, casa em harmonia." com as palavras coloridas. */
     static void setupTagline(Activity activity) {
         SpannableStringBuilder text = new SpannableStringBuilder();
         Views.append(activity, text, "Energia sob ", 0, false);
@@ -45,7 +42,6 @@ final class AuthScreen {
         tagline.setText(text);
     }
 
-    /** "Não tem conta? Criar conta" com a parte final em verde. */
     static void setupLink(Activity activity, TextView link, String question, String action) {
         SpannableStringBuilder text = new SpannableStringBuilder();
         Views.append(activity, text, question + " ", 0, false);

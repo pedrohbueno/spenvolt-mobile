@@ -30,13 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Aba "Planta" da residência (porta de FloorPlan.tsx + RoomPanel.tsx do site).
- *
- * Fica numa classe separada para a ResidenceActivity não ficar gigante.
- * Mostra os andares, as seções em grade (2 por linha) coloridas pelo consumo
- * e o painel da seção escolhida, onde se colocam e tiram aparelhos.
- */
 class FloorPlanSection {
 
     private final Context context;
@@ -46,11 +39,10 @@ class FloorPlanSection {
 
     private final List<Floor> floors = new ArrayList<>();
     private List<Device> devices = new ArrayList<>();
-    private int floorId = -1;          // andar mostrado
-    private int selectedRoomId = -1;   // seção aberta no painel
+    private int floorId = -1;
+    private int selectedRoomId = -1;
     private boolean loading = true;
 
-    // Views
     private final TextView txtRoomCounts;
     private final LinearLayout floorChips;
     private final TextView txtPlanError;
@@ -88,7 +80,6 @@ class FloorPlanSection {
         root.findViewById(R.id.btnAddRoom).setOnClickListener(v -> openAddRoom(null, -1));
         root.findViewById(R.id.btnRemoveRoom).setOnClickListener(v -> confirmRemoveRoom());
 
-        // Renomear: ao tocar em "OK" no teclado ou ao sair do campo
         etRoomName.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 etRoomName.clearFocus();
@@ -101,9 +92,6 @@ class FloorPlanSection {
         });
     }
 
-    // ======================= Dados =======================
-
-    /** Busca os andares e seções na API. */
     void load() {
         api.findFloors(residenceId, new ApiCallback<List<Floor>>() {
             @Override
@@ -127,7 +115,6 @@ class FloorPlanSection {
         });
     }
 
-    /** Aparelhos da residência (para calcular o consumo de cada seção). */
     void setDevices(List<Device> devices) {
         this.devices = devices;
         render();
@@ -140,7 +127,6 @@ class FloorPlanSection {
         return null;
     }
 
-    /** Seções do andar mostrado. */
     private List<Room> currentRooms() {
         Floor floor = findFloor(floorId);
         return floor == null ? new ArrayList<>() : floor.rooms;
@@ -153,14 +139,11 @@ class FloorPlanSection {
         return null;
     }
 
-    /** Total da casa, para o "% da casa" do painel. */
     private double houseKwh() {
         double total = 0;
         for (Device d : devices) total += d.monthlyKwh;
         return total;
     }
-
-    // ======================= Desenho =======================
 
     private void render() {
         if (loading) {
@@ -176,7 +159,6 @@ class FloorPlanSection {
         renderPanel();
     }
 
-    /** Chips dos andares + "+ Andar". */
     private void renderFloors() {
         floorChips.removeAllViews();
         for (Floor floor : floors) {
@@ -195,10 +177,6 @@ class FloorPlanSection {
         addFloor.setOnClickListener(v -> addFloor());
     }
 
-    /**
-     * Grade com as seções, 2 por linha.
-     * Para cada tipo mostra as seções cadastradas + uma vaga livre (se ainda couber).
-     */
     private void renderGrid() {
         roomsGrid.removeAllViews();
         if (loading || floorId == -1) return;
@@ -222,7 +200,6 @@ class FloorPlanSection {
             }
         }
 
-        // Monta as linhas de 2 em 2
         LinearLayout row = null;
         for (int i = 0; i < tiles.size(); i++) {
             if (i % 2 == 0) {
@@ -232,7 +209,6 @@ class FloorPlanSection {
             }
             row.addView(tiles.get(i));
         }
-        // Linha com um só item: um espaço vazio mantém o tamanho do card
         if (tiles.size() % 2 == 1 && row != null) {
             View spacer = new View(context);
             row.addView(spacer, new LinearLayout.LayoutParams(0, 1, 1f));
@@ -245,7 +221,6 @@ class FloorPlanSection {
         Consumption.Density density = Consumption.density(usage.kwh, room.kind.area);
         boolean selected = room.id == selectedRoomId;
 
-        // Fundo e borda pela densidade; a seção escolhida ganha borda azul.
         GradientDrawable background = (GradientDrawable) tile.getBackground().mutate();
         background.setColor(ContextCompat.getColor(context, density.fillRes));
         int strokeColor = ContextCompat.getColor(context, selected ? R.color.blue_end : density.strokeRes);
@@ -256,7 +231,7 @@ class FloorPlanSection {
         ((TextView) tile.findViewById(R.id.txtKwh)).setText(Format.kwh(usage.kwh));
 
         tile.setOnClickListener(v -> {
-            selectedRoomId = selected ? -1 : room.id; // tocar de novo fecha o painel
+            selectedRoomId = selected ? -1 : room.id;
             render();
         });
         return tile;
@@ -269,7 +244,6 @@ class FloorPlanSection {
         return tile;
     }
 
-    /** Painel escuro com os aparelhos da seção escolhida. */
     private void renderPanel() {
         Room room = selectedRoom();
         Views.show(roomPanel, room != null);
@@ -285,7 +259,6 @@ class FloorPlanSection {
         txtRoomKwh.setText(Format.kwh(usage.kwh));
         txtRoomCost.setText(Format.brl(usage.cost) + " no mês · " + share + "% da casa");
 
-        // Aparelhos da seção, do maior para o menor consumo
         List<Device> inRoom = new ArrayList<>();
         List<Device> available = new ArrayList<>();
         for (Device d : devices) {
@@ -312,7 +285,6 @@ class FloorPlanSection {
         renderAddDeviceSpinner(room, available);
     }
 
-    /** Spinner "+ Dispositivo": escolher um item coloca o aparelho na seção. */
     private void renderAddDeviceSpinner(Room room, List<Device> available) {
         Views.show(spinnerAddDevice, !available.isEmpty());
 
@@ -331,7 +303,7 @@ class FloorPlanSection {
         spinnerAddDevice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) return; // é só o título
+                if (position == 0) return;
                 assignDevice(room, available.get(position - 1).id);
             }
 
@@ -341,7 +313,6 @@ class FloorPlanSection {
         });
     }
 
-    /** Um aparelho fica em uma única seção da casa (de qualquer andar). */
     private boolean isInAnyRoom(int deviceId) {
         for (Floor f : floors) {
             for (Room r : f.rooms) {
@@ -350,8 +321,6 @@ class FloorPlanSection {
         }
         return false;
     }
-
-    // ======================= Ações =======================
 
     private void addFloor() {
         api.createFloor(residenceId, new ApiCallback<Floor>() {
@@ -444,7 +413,6 @@ class FloorPlanSection {
         api.assignDevice(room.id, deviceId, new ApiCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                // Sai de todas as seções e entra nesta (a API faz o mesmo)
                 for (Floor f : floors) {
                     for (Room r : f.rooms) {
                         r.deviceIds.remove(Integer.valueOf(deviceId));
@@ -476,8 +444,6 @@ class FloorPlanSection {
             }
         });
     }
-
-    // ======================= Apoio =======================
 
     private void showError(String message) {
         Views.message(txtPlanError, message);

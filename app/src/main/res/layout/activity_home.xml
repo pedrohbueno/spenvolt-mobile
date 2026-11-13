@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Início: resumo do mês, residências, quem mais consome, membros, comparativo e histórico -->
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +9,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- ===== Banner do resumo ===== -->
         <LinearLayout
             style="@style/SpenVolt.Card.Dark"
             android:layout_width="match_parent"
@@ -105,7 +103,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ===== Minhas residências ===== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -145,7 +142,6 @@
             android:layout_marginTop="12dp"
             android:text="Carregando residências…" />
 
-        <!-- Estado vazio: aparece quando o usuário não tem residências -->
         <LinearLayout
             android:id="@+id/emptyResidences"
             android:layout_width="match_parent"
@@ -181,14 +177,12 @@
                 android:text="Nova residência" />
         </LinearLayout>
 
-        <!-- Os cards das residências (item_residence_card) entram aqui -->
         <LinearLayout
             android:id="@+id/residencesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
 
-        <!-- ===== Quem mais consome ===== -->
         <LinearLayout
             style="@style/SpenVolt.Card"
             android:layout_width="match_parent"
@@ -224,7 +218,6 @@
                 android:orientation="vertical" />
         </LinearLayout>
 
-        <!-- ===== Consumo por membro ===== -->
         <LinearLayout
             style="@style/SpenVolt.Card"
             android:layout_width="match_parent"
@@ -260,7 +253,6 @@
                 android:orientation="vertical" />
         </LinearLayout>
 
-        <!-- ===== Comparativo entre residências (só com 2 ou mais) ===== -->
         <LinearLayout
             android:id="@+id/comparisonCard"
             style="@style/SpenVolt.Card"
@@ -282,7 +274,6 @@
                 android:text="Quem está perto do limite e onde o consumo se concentra"
                 android:textSize="13sp" />
 
-            <!-- Seletor do critério -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -368,7 +359,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ===== Histórico ===== -->
         <TextView
             style="@style/SpenVolt.Text.Title"
             android:layout_width="wrap_content"

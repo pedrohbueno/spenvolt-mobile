@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Texto de chips e abas: amarelo quando selecionado, azul-escuro quando não -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="@color/yellow" android:state_selected="true" />
     <item android:color="@color/dark_blue" />

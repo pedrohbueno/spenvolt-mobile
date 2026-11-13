@@ -10,15 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Regras de consumo, iguais às do site (lib/consumption.ts, lib/members.ts, lib/floorplan.ts). */
 public final class Consumption {
 
     private Consumption() {
     }
 
-    // ===================== Status da residência =====================
-
-    /** Situação do consumo em relação ao limite. */
     public enum Status {
         OK("Tranquilo", R.color.status_ok, R.color.white),
         WARNING("Em alerta", R.color.status_warning, R.color.dark_blue),
@@ -26,8 +22,8 @@ public final class Consumption {
         NO_LIMIT("Sem limite", R.color.status_none, R.color.dark_blue);
 
         public final String label;
-        public final int colorRes;      // cor do selo e da barra
-        public final int textColorRes;  // cor do texto em cima do selo
+        public final int colorRes;
+        public final int textColorRes;
 
         Status(String label, int colorRes, int textColorRes) {
             this.label = label;
@@ -36,13 +32,11 @@ public final class Consumption {
         }
     }
 
-    /** % usado do limite (0 se não há limite). */
     public static double usagePercent(double used, double limit) {
         if (limit <= 0) return 0;
         return used / limit * 100;
     }
 
-    /** Status pelo uso e limite; alerta padrão em 80%. */
     public static Status status(double used, double limit, Integer alertAt) {
         if (limit <= 0) return Status.NO_LIMIT;
         double percent = usagePercent(used, limit);
@@ -51,14 +45,10 @@ public final class Consumption {
         return Status.OK;
     }
 
-    /** Status da residência pelo consumo em kWh. */
     public static Status status(Residence r) {
         return status(r.monthlyKwh, r.kwhLimit(), r.alertThresholdPercent);
     }
 
-    // ===================== Aparelhos =====================
-
-    /** kWh/mês = (potência em W × horas por dia × dias por mês) / 1000 */
     public static double monthlyKwh(double powerW, double hoursPerDay, double daysPerMonth) {
         return powerW * hoursPerDay * daysPerMonth / 1000;
     }
@@ -71,15 +61,11 @@ public final class Consumption {
         return total;
     }
 
-    // ===================== Membros =====================
-
-    /** O consumo de um aparelho é dividido igualmente entre os membros que o usam. */
     public static Usage deviceShare(Device device) {
         int users = Math.max(device.memberIds.size(), 1);
         return new Usage(device.monthlyKwh / users, device.monthlyCost / users);
     }
 
-    /** Consumo de cada membro (id do membro → uso). */
     public static Map<Integer, Usage> usageByMember(List<Device> devices) {
         Map<Integer, Usage> totals = new HashMap<>();
         for (Device device : devices) {
@@ -96,9 +82,6 @@ public final class Consumption {
         return totals;
     }
 
-    // ===================== Planta =====================
-
-    /** Nível de consumo de uma seção, pela densidade (kWh por m²). */
     public enum Density {
         LOW(R.color.room_low, R.color.status_ok),
         WARNING(R.color.room_warning, R.color.status_warning),
@@ -120,7 +103,6 @@ public final class Consumption {
         return Density.LOW;
     }
 
-    /** Soma dos aparelhos que estão na seção. */
     public static Usage roomUsage(Room room, List<Device> devices) {
         Usage usage = new Usage(0, 0);
         for (Device d : devices) {

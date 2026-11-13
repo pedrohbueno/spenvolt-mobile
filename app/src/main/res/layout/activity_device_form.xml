@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Adicionar / editar dispositivo, com a prévia ao vivo fixa embaixo -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -187,7 +186,6 @@
                 android:hint="https://..."
                 android:inputType="textUri" />
 
-            <!-- Residência: escolhível ao criar, só leitura ao editar -->
             <TextView
                 style="@style/SpenVolt.Text.Label"
                 android:layout_width="wrap_content"
@@ -226,7 +224,6 @@
                 android:text="Esta residência ainda não tem membros."
                 android:visibility="gone" />
 
-            <!-- ChipGroup só organiza os chips em várias linhas -->
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/memberChips"
                 android:layout_width="match_parent"
@@ -242,7 +239,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Prévia ao vivo + salvar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -39,17 +39,8 @@ import com.spenvolt.mobile.util.Format;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Base de todas as telas internas do app (as que ficam depois do login).
- *
- * Ela monta a barra do topo e o menu lateral e carrega as residências do usuário.
- * A tela filha só precisa:
- *   1. chamar setScreen(R.layout.activity_x, NAV_X) no onCreate;
- *   2. (opcional) sobrescrever onResidencesLoaded / onResidenceChanged para carregar seus dados.
- */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    // Qual item do menu fica destacado
     protected static final int NAV_NONE = 0;
     protected static final int NAV_HOME = 1;
     protected static final int NAV_DEVICES = 2;
@@ -58,7 +49,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected SessionManager session;
 
-    /** Residências do usuário (atualizadas sempre que a tela volta a aparecer). */
     protected final List<Residence> residences = new ArrayList<>();
 
     private DrawerLayout drawerLayout;
@@ -69,15 +59,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         session = new SessionManager(this);
 
-        // Sem sessão válida não dá para ficar em uma tela interna.
         if (!session.isLoggedIn()) {
             goToLogin();
         }
     }
 
-    /** Monta a tela: barra do topo + layout da tela + menu lateral. */
     protected void setScreen(@LayoutRes int layoutId, int navItem) {
-        // Barra de status escura (ícones claros) e barra de navegação clara.
         EdgeToEdge.enable(this,
                 SystemBarStyle.dark(Color.TRANSPARENT),
                 SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT));
@@ -100,17 +87,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    // ======================= Para as telas filhas =======================
-
-    /** Chamado quando as residências chegam da API (toda vez que a tela volta a aparecer). */
     protected void onResidencesLoaded(@Nullable Residence selected) {
     }
 
-    /** Chamado quando o usuário troca a residência no menu lateral. */
     protected void onResidenceChanged(Residence selected) {
     }
 
-    /** Residência escolhida no menu (ou null se o usuário ainda não tem nenhuma). */
     @Nullable
     protected Residence selectedResidence() {
         int id = session.getSelectedResidenceId();
@@ -120,12 +102,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         return residences.isEmpty() ? null : residences.get(0);
     }
 
-    /** Mensagem rápida na parte de baixo da tela. */
     protected void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-    // ======================= Barra do topo =======================
 
     private void setupToolbar() {
         findViewById(R.id.btnMenu).setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
@@ -136,7 +115,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
     }
 
-    /** Afasta o conteúdo da barra de status e da barra de navegação do Android. */
     private void applyInsets(View content) {
         View toolbar = findViewById(R.id.appToolbar);
         View drawerPanel = findViewById(R.id.drawerPanel);
@@ -148,8 +126,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             return insets;
         });
     }
-
-    // ======================= Menu lateral =======================
 
     private void setupDrawer(int navItem) {
         highlight(R.id.navHome, navItem == NAV_HOME);
@@ -173,7 +149,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         spinnerResidence = findViewById(R.id.spinnerResidence);
     }
 
-    /** Item ativo: texto amarelo em negrito e faixa amarela à esquerda. */
     private void highlight(int viewId, boolean active) {
         if (!active) return;
         TextView item = findViewById(viewId);
@@ -182,13 +157,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         item.setBackgroundResource(R.drawable.bg_drawer_item_active);
     }
 
-    /**
-     * Abre uma tela principal do menu.
-     * O Início fica sempre na base da pilha: voltar de qualquer tela principal leva a ele.
-     */
     private void openTopLevel(Class<?> screen) {
         drawerLayout.closeDrawers();
-        if (screen.isInstance(this)) return; // já está nela
+        if (screen.isInstance(this)) return;
 
         Intent intent = new Intent(this, screen);
         if (screen == HomeActivity.class) {
@@ -224,8 +195,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         finish();
     }
 
-    // ======================= Residências =======================
-
     private void loadResidences() {
         new ResidenceApi(this).findAll(new ApiCallback<List<Residence>>() {
             @Override
@@ -260,7 +229,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Residence chosen = residences.get(position);
-                if (chosen.id == session.getSelectedResidenceId()) return; // nada mudou
+                if (chosen.id == session.getSelectedResidenceId()) return;
                 session.setSelectedResidenceId(chosen.id);
                 drawerLayout.closeDrawers();
                 onResidenceChanged(chosen);

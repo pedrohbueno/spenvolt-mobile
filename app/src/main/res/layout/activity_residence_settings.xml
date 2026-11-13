@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Configurações da residência: dados, membros e exclusão -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -27,7 +26,6 @@
             android:text="Carregando…"
             android:textSize="13sp" />
 
-        <!-- Dados -->
         <LinearLayout
             style="@style/SpenVolt.Card"
             android:layout_width="match_parent"
@@ -58,7 +56,6 @@
                 android:text="Salvar alterações" />
         </LinearLayout>
 
-        <!-- Membros -->
         <LinearLayout
             style="@style/SpenVolt.Card"
             android:layout_width="match_parent"
@@ -89,7 +86,6 @@
                 android:orientation="vertical" />
         </LinearLayout>
 
-        <!-- Zona de perigo -->
         <TextView
             style="@style/SpenVolt.Text.Caption"
             android:layout_width="wrap_content"

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Libera HTTP (sem SSL) apenas para a API local. O resto continua exigindo HTTPS. -->
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <!-- Emulador -->
         <domain includeSubdomains="false">10.0.2.2</domain>
-        <!-- Celular físico: coloque aqui o IP do seu PC, ex.: 192.168.0.10 -->
         <domain includeSubdomains="false">192.168.1.104</domain>
     </domain-config>
 </network-security-config>

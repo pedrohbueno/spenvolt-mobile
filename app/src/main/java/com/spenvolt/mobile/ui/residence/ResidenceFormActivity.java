@@ -11,7 +11,6 @@ import com.spenvolt.mobile.model.Residence;
 import com.spenvolt.mobile.ui.common.BaseActivity;
 import com.spenvolt.mobile.ui.common.Views;
 
-/** Criar residência (residences/new/page.tsx do site). */
 public class ResidenceFormActivity extends BaseActivity {
 
     private ResidenceFields fields;
@@ -45,9 +44,9 @@ public class ResidenceFormActivity extends BaseActivity {
         new ResidenceApi(this).create(residence, new ApiCallback<Residence>() {
             @Override
             public void onSuccess(Residence created) {
-                session.setSelectedResidenceId(created.id); // a nova casa vira a selecionada
+                session.setSelectedResidenceId(created.id);
                 toast("Residência criada.");
-                finish(); // o Início recarrega a lista ao voltar
+                finish();
             }
 
             @Override

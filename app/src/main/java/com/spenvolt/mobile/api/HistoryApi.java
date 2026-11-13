@@ -6,7 +6,6 @@ import com.spenvolt.mobile.model.History;
 
 import java.util.List;
 
-/** Histórico de alterações (/api/history). */
 public class HistoryApi {
 
     private final ApiClient api;
@@ -15,7 +14,6 @@ public class HistoryApi {
         api = ApiClient.getInstance(context);
     }
 
-    /** GET /api/history → alterações do usuário logado. */
     public void findAll(ApiCallback<List<History>> callback) {
         api.get("/api/history", Json.list(History::fromJson, callback));
     }

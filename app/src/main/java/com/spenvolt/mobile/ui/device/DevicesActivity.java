@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
-/** Dispositivos da residência selecionada, com filtros (devices/page.tsx do site). */
 public class DevicesActivity extends BaseActivity {
 
     private static final String[] SORT_LABELS = {"Maior consumo", "Menor consumo", "Nome (A–Z)"};
@@ -41,9 +40,8 @@ public class DevicesActivity extends BaseActivity {
     private final List<Device> devices = new ArrayList<>();
     private final List<Member> members = new ArrayList<>();
 
-    // Filtros atuais
-    private String category = null; // null = todas
-    private int memberId = -1;      // -1 = todos
+    private String category = null;
+    private int memberId = -1;
     private int sort = SORT_KWH_DESC;
 
     private Residence residence;
@@ -75,8 +73,6 @@ public class DevicesActivity extends BaseActivity {
         setupSortSpinner();
         findViewById(R.id.fabAdd).setOnClickListener(v -> openNewDevice());
     }
-
-    // ======================= Residência =======================
 
     @Override
     protected void onResidencesLoaded(@Nullable Residence selected) {
@@ -137,9 +133,6 @@ public class DevicesActivity extends BaseActivity {
         });
     }
 
-    // ======================= Filtros =======================
-
-    /** Chips "Todas" + uma por categoria cadastrada. */
     private void renderCategories() {
         TreeSet<String> names = new TreeSet<>(Collator.getInstance(new Locale("pt", "BR")));
         for (Device d : devices) {
@@ -195,7 +188,6 @@ public class DevicesActivity extends BaseActivity {
         }));
     }
 
-    /** Aplica categoria, membro e ordenação (lib/devices.ts do site). */
     private void applyFilters() {
         List<Device> visible = new ArrayList<>();
         for (Device d : devices) {

@@ -22,7 +22,6 @@ import com.spenvolt.mobile.util.Format;
 
 import java.util.List;
 
-/** Configurações de uma residência (residences/[id]/settings/page.tsx do site). */
 public class ResidenceSettingsActivity extends BaseActivity {
 
     public static final String EXTRA_RESIDENCE_ID = "residence_id";
@@ -53,7 +52,6 @@ public class ResidenceSettingsActivity extends BaseActivity {
         loadMembers();
     }
 
-    /** Trocar a residência no menu abre as configurações dela. */
     @Override
     protected void onResidenceChanged(Residence selected) {
         residenceId = selected.id;
@@ -61,8 +59,6 @@ public class ResidenceSettingsActivity extends BaseActivity {
         loadResidence();
         loadMembers();
     }
-
-    // ======================= Dados da residência =======================
 
     private void loadResidence() {
         new ResidenceApi(this).findById(residenceId, new ApiCallback<Residence>() {
@@ -105,13 +101,10 @@ public class ResidenceSettingsActivity extends BaseActivity {
         });
     }
 
-    /** Mensagem abaixo do formulário: verde para sucesso, vermelha para erro. */
     private void showStatus(String message, boolean success) {
         txtStatus.setTextColor(ContextCompat.getColor(this, success ? R.color.green_text : R.color.red_600));
         Views.message(txtStatus, message);
     }
-
-    // ======================= Membros =======================
 
     private void loadMembers() {
         new MemberApi(this).findByResidence(residenceId, new ApiCallback<List<Member>>() {
@@ -154,8 +147,6 @@ public class ResidenceSettingsActivity extends BaseActivity {
                     }
                 }));
     }
-
-    // ======================= Excluir =======================
 
     private void confirmDelete() {
         if (residence == null) return;

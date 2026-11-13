@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Andar da planta, com suas seções (FloorResponseDTO da API). */
 public class Floor {
 
     public int id;

@@ -1,5 +1,4 @@
 <resources>
-    <!-- Tema do app: claro, sem ActionBar (cada tela usa a barra própria do SpenVolt). -->
     <style name="Base.Theme.SpenVolt" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/dark_blue</item>
         <item name="colorOnPrimary">@color/yellow</item>

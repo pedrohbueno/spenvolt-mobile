@@ -1,6 +1,5 @@
 package com.spenvolt.mobile.model;
 
-/** Consumo (kWh) e custo (R$) somados de um ou mais aparelhos. */
 public class Usage {
 
     public double kwh;

@@ -8,13 +8,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Seção (cômodo) de um andar da planta (RoomResponseDTO da API). */
 public class Room {
 
     public int id;
     public int floorId;
     public RoomKind kind;
-    public int slot;          // número dentro do tipo: Quarto 1, Quarto 2...
+    public int slot;
     public String name;
     public List<Integer> deviceIds = new ArrayList<>();
 
