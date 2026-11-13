@@ -4,23 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.DeviceApi;
 import com.spenvolt.mobile.api.MemberApi;
 import com.spenvolt.mobile.model.Device;
 import com.spenvolt.mobile.model.Member;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
-import com.spenvolt.mobile.ui.economize.EconomizeActivity;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.util.Format;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceDetailActivity extends BaseActivity {
+public class DeviceDetailActivity extends AppCompatActivity {
+
+    private SessionManager session;
 
     public static final String EXTRA_DEVICE_ID = "device_id";
 
@@ -30,7 +35,8 @@ public class DeviceDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_device_detail, NAV_NONE);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_device_detail, 0)) return;
         deviceId = getIntent().getIntExtra(EXTRA_DEVICE_ID, -1);
 
         findViewById(R.id.btnEdit).setOnClickListener(v -> {
@@ -39,7 +45,6 @@ public class DeviceDetailActivity extends BaseActivity {
             startActivity(intent);
         });
         findViewById(R.id.btnRemove).setOnClickListener(v -> confirmRemove());
-        findViewById(R.id.btnAlternatives).setOnClickListener(v -> openAlternatives());
     }
 
     @Override
@@ -59,7 +64,8 @@ public class DeviceDetailActivity extends BaseActivity {
 
             @Override
             public void onError(String message) {
-                Views.message(findViewById(R.id.txtError), "Dispositivo não encontrado ou API indisponível.");
+                ((TextView) findViewById(R.id.txtError)).setText("Dispositivo não encontrado ou API indisponível.");
+                findViewById(R.id.txtError).setVisibility(View.VISIBLE);
             }
         });
     }
@@ -97,37 +103,35 @@ public class DeviceDetailActivity extends BaseActivity {
                     container.addView(chip);
                     shown++;
                 }
-                Views.show(findViewById(R.id.txtNoMembers), shown == 0);
+                findViewById(R.id.txtNoMembers).setVisibility(shown == 0 ? View.VISIBLE : View.GONE);
             }
 
             @Override
             public void onError(String message) {
-                toast(message);
+                Toast.makeText(DeviceDetailActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void openAlternatives() {
-        if (device == null) return;
-        Intent intent = new Intent(this, EconomizeActivity.class);
-        intent.putExtra(EconomizeActivity.EXTRA_QUERY, device.displayName());
-        startActivity(intent);
-    }
-
     private void confirmRemove() {
         if (device == null) return;
-        Views.confirm(this, "Remover dispositivo", "Remover \"" + device.displayName() + "\"?", "Remover", () ->
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Remover dispositivo")
+                .setMessage("Remover \"" + device.displayName() + "\"?")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Remover", (dialog, which) ->
                 new DeviceApi(this).delete(deviceId, new ApiCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
-                        toast("Dispositivo removido.");
+                        Toast.makeText(DeviceDetailActivity.this, "Dispositivo removido.", Toast.LENGTH_SHORT).show();
                         finish();
                     }
 
                     @Override
                     public void onError(String message) {
-                        toast("Não foi possível remover o dispositivo. Tente novamente.");
+                        Toast.makeText(DeviceDetailActivity.this, "Não foi possível remover o dispositivo. Tente novamente.", Toast.LENGTH_SHORT).show();
                     }
-                }));
+                }))
+                .show();
     }
 }

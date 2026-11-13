@@ -337,26 +337,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="12dp"
-                    android:background="@color/dark_blue" />
-
-                <TextView
-                    style="@style/SpenVolt.Text.Caption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Marca o limite definido para cada residência" />
-            </LinearLayout>
         </LinearLayout>
 
         <TextView

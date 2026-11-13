@@ -1,12 +1,16 @@
 package com.spenvolt.mobile.ui.member;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,13 +18,13 @@ import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.DeviceApi;
 import com.spenvolt.mobile.api.MemberApi;
+import com.spenvolt.mobile.api.ResidenceApi;
 import com.spenvolt.mobile.model.Device;
 import com.spenvolt.mobile.model.Member;
 import com.spenvolt.mobile.model.Residence;
 import com.spenvolt.mobile.model.Usage;
-import com.spenvolt.mobile.ui.common.BarView;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.ui.residence.ResidenceFormActivity;
 import com.spenvolt.mobile.util.Consumption;
 import com.spenvolt.mobile.util.Format;
@@ -29,7 +33,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MembersActivity extends BaseActivity implements MemberAdapter.Listener {
+public class MembersActivity extends AppCompatActivity implements MemberAdapter.Listener {
+
+    private SessionManager session;
 
     private final List<Member> members = new ArrayList<>();
     private final List<Device> devices = new ArrayList<>();
@@ -42,7 +48,8 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_members, NAV_MEMBERS);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_members, R.id.navMembers)) return;
         txtStatus = findViewById(R.id.txtStatus);
 
         adapter = new MemberAdapter(this);
@@ -52,19 +59,33 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
     }
 
     @Override
-    protected void onResidencesLoaded(@Nullable Residence selected) {
-        residence = selected;
-        if (selected == null) {
-            Views.message(txtStatus, "Cadastre uma residência para adicionar membros.");
+    protected void onResume() {
+        super.onResume();
+        int id = session.getSelectedResidenceId();
+        if (id == -1) {
+            showResidence(null);
             return;
         }
-        loadData();
+        new ResidenceApi(this).findById(id, new ApiCallback<Residence>() {
+            @Override
+            public void onSuccess(Residence result) {
+                showResidence(result);
+            }
+
+            @Override
+            public void onError(String message) {
+                showResidence(null);
+            }
+        });
     }
 
-    @Override
-    protected void onResidenceChanged(Residence selected) {
+    private void showResidence(@Nullable Residence selected) {
         residence = selected;
-        activeMember = null;
+        if (selected == null) {
+            txtStatus.setText("Cadastre uma residência para adicionar membros.");
+            txtStatus.setVisibility(View.VISIBLE);
+            return;
+        }
         loadData();
     }
 
@@ -77,15 +98,15 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
             public void onSuccess(List<Member> result) {
                 members.clear();
                 members.addAll(result);
-                Views.message(txtStatus, members.isEmpty()
-                        ? "Nenhum membro cadastrado ainda. Adicione quem mora na casa para ver quanto cada pessoa consome."
-                        : null);
+                txtStatus.setText("Nenhum membro cadastrado ainda. Adicione quem mora na casa para ver quanto cada pessoa consome.");
+                txtStatus.setVisibility(members.isEmpty() ? View.VISIBLE : View.GONE);
                 render();
             }
 
             @Override
             public void onError(String message) {
-                Views.message(txtStatus, "Não foi possível carregar os membros. Tente novamente.");
+                txtStatus.setText("Não foi possível carregar os membros. Tente novamente.");
+                txtStatus.setVisibility(View.VISIBLE);
             }
         });
 
@@ -99,7 +120,7 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
 
             @Override
             public void onError(String message) {
-                toast(message);
+                Toast.makeText(MembersActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -139,7 +160,7 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
 
     private void renderDetail() {
         View detail = findViewById(R.id.memberDetail);
-        Views.show(detail, activeMember != null);
+        detail.setVisibility(activeMember != null ? View.VISIBLE : View.GONE);
         if (activeMember == null) return;
 
         ((TextView) findViewById(R.id.txtDetailTitle)).setText("Dispositivos de " + activeMember.name);
@@ -149,7 +170,7 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
             if (d.memberIds.contains(activeMember.id)) own.add(d);
         }
         Collections.sort(own, (a, b) -> Double.compare(Consumption.deviceShare(b).kwh, Consumption.deviceShare(a).kwh));
-        Views.show(findViewById(R.id.txtDetailEmpty), own.isEmpty());
+        findViewById(R.id.txtDetailEmpty).setVisibility(own.isEmpty() ? View.VISIBLE : View.GONE);
 
         double max = 1;
         for (Device d : own) max = Math.max(max, Consumption.deviceShare(d).kwh);
@@ -161,8 +182,9 @@ public class MembersActivity extends BaseActivity implements MemberAdapter.Liste
             View row = getLayoutInflater().inflate(R.layout.item_bar_row, bars, false);
             ((TextView) row.findViewById(R.id.txtLabel)).setText(d.displayName());
             ((TextView) row.findViewById(R.id.txtCaption)).setText(Format.kwh(share.kwh) + " · " + Format.brl(share.cost));
-            BarView bar = row.findViewById(R.id.bar);
-            bar.setProgress((float) (share.kwh / max), R.color.green_start, R.color.green_end);
+            ProgressBar bar = row.findViewById(R.id.bar);
+            bar.setProgress((int) (share.kwh / max * 100));
+            bar.setProgressTintList(ColorStateList.valueOf(getColor(R.color.green_end)));
             bars.addView(row);
         }
     }

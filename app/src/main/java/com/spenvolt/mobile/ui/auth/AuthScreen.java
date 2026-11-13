@@ -2,7 +2,7 @@ package com.spenvolt.mobile.ui.auth;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.text.SpannableStringBuilder;
+import android.text.Html;
 import android.widget.TextView;
 
 import androidx.activity.ComponentActivity;
@@ -13,7 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.spenvolt.mobile.R;
-import com.spenvolt.mobile.ui.common.Views;
 
 final class AuthScreen {
 
@@ -32,20 +31,11 @@ final class AuthScreen {
     }
 
     static void setupTagline(Activity activity) {
-        SpannableStringBuilder text = new SpannableStringBuilder();
-        Views.append(activity, text, "Energia sob ", 0, false);
-        Views.append(activity, text, "controle", R.color.yellow, true);
-        Views.append(activity, text, ", casa em ", 0, false);
-        Views.append(activity, text, "harmonia", R.color.green_button, true);
-        Views.append(activity, text, ".", 0, false);
         TextView tagline = activity.findViewById(R.id.txtTagline);
-        tagline.setText(text);
+        tagline.setText(Html.fromHtml("Energia sob <b><font color='#FFD43B'>controle</font></b>, casa em <b><font color='#72F45B'>harmonia</font></b>.", Html.FROM_HTML_MODE_LEGACY));
     }
 
-    static void setupLink(Activity activity, TextView link, String question, String action) {
-        SpannableStringBuilder text = new SpannableStringBuilder();
-        Views.append(activity, text, question + " ", 0, false);
-        Views.append(activity, text, action, R.color.green_text, true);
-        link.setText(text);
+    static void setupLink(TextView link, String question, String action) {
+        link.setText(Html.fromHtml(question + " <b><font color='#15803D'>" + action + "</font></b>", Html.FROM_HTML_MODE_LEGACY));
     }
 }

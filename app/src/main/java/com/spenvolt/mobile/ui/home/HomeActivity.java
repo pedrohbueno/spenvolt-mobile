@@ -1,14 +1,17 @@
 package com.spenvolt.mobile.ui.home;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.spenvolt.mobile.R;
@@ -16,13 +19,13 @@ import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.DeviceApi;
 import com.spenvolt.mobile.api.HistoryApi;
 import com.spenvolt.mobile.api.MemberApi;
+import com.spenvolt.mobile.api.ResidenceApi;
 import com.spenvolt.mobile.model.Device;
 import com.spenvolt.mobile.model.History;
 import com.spenvolt.mobile.model.MemberConsumption;
 import com.spenvolt.mobile.model.Residence;
-import com.spenvolt.mobile.ui.common.BarView;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.ui.device.DeviceDetailActivity;
 import com.spenvolt.mobile.ui.residence.ResidenceActivity;
 import com.spenvolt.mobile.ui.residence.ResidenceFormActivity;
@@ -37,12 +40,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends AppCompatActivity {
+
+    private SessionManager session;
 
     private static final int TOP_DEVICES = 5;
 
     private enum Metric { LIMIT, KWH, COST }
 
+    private final List<Residence> residences = new ArrayList<>();
     private final List<Device> devices = new ArrayList<>();
     private Metric metric = Metric.LIMIT;
 
@@ -56,7 +62,8 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_home, NAV_HOME);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_home, R.id.navHome)) return;
         inflater = getLayoutInflater();
 
         residencesContainer = findViewById(R.id.residencesContainer);
@@ -81,13 +88,29 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadResidences();
         loadDevices();
         loadMemberUsage();
         loadHistory();
     }
 
-    @Override
-    protected void onResidencesLoaded(@Nullable Residence selected) {
+    private void loadResidences() {
+        new ResidenceApi(this).findAll(new ApiCallback<List<Residence>>() {
+            @Override
+            public void onSuccess(List<Residence> result) {
+                residences.clear();
+                residences.addAll(result);
+                showResidences();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showResidences() {
         renderBanner();
         renderResidences();
         renderComparison();
@@ -154,13 +177,8 @@ public class HomeActivity extends BaseActivity {
         String summary = anyExceeded ? "passou do limite" : anyWarning ? "em alerta" : "no ritmo";
         String name = session.getName().isEmpty() ? "bem-vindo" : session.getName();
 
-        SpannableStringBuilder greeting = new SpannableStringBuilder();
-        Views.append(this, greeting, "Olá, ", 0, false);
-        Views.append(this, greeting, name, R.color.blue_start, false);
-        Views.append(this, greeting, "! Sua casa está ", 0, false);
-        Views.append(this, greeting, summary, R.color.yellow, false);
-        Views.append(this, greeting, ".", 0, false);
-        ((TextView) findViewById(R.id.txtGreeting)).setText(greeting);
+        String greeting = "Olá, <font color='#00C6FF'>" + name + "</font>! Sua casa está <font color='#FFD43B'>" + summary + "</font>.";
+        ((TextView) findViewById(R.id.txtGreeting)).setText(Html.fromHtml(greeting, Html.FROM_HTML_MODE_LEGACY));
 
         setText(R.id.txtTotalKwh, Format.num(kwh));
         setText(R.id.txtTotalCost, Format.brl(cost));
@@ -169,9 +187,9 @@ public class HomeActivity extends BaseActivity {
 
     private void renderResidences() {
         residencesContainer.removeAllViews();
-        Views.show(findViewById(R.id.txtResidencesStatus), false);
-        Views.show(findViewById(R.id.emptyResidences), residences.isEmpty());
-        Views.show(findViewById(R.id.btnNewResidence), !residences.isEmpty());
+        findViewById(R.id.txtResidencesStatus).setVisibility(View.GONE);
+        findViewById(R.id.emptyResidences).setVisibility(residences.isEmpty() ? View.VISIBLE : View.GONE);
+        findViewById(R.id.btnNewResidence).setVisibility(!residences.isEmpty() ? View.VISIBLE : View.GONE);
 
         for (Residence r : residences) {
             View card = inflater.inflate(R.layout.item_residence_card, residencesContainer, false);
@@ -193,7 +211,10 @@ public class HomeActivity extends BaseActivity {
         ((TextView) card.findViewById(R.id.txtAddress)).setText(r.address);
         ((TextView) card.findViewById(R.id.txtKwh)).setText(Format.num(r.monthlyKwh));
         ((TextView) card.findViewById(R.id.txtCost)).setText(Format.brl(r.monthlyCost));
-        Views.statusBadge(card.findViewById(R.id.txtStatus), status);
+        TextView txtStatus = card.findViewById(R.id.txtStatus);
+        txtStatus.setText(status.label);
+        txtStatus.setBackgroundTintList(ColorStateList.valueOf(getColor(status.colorRes)));
+        txtStatus.setTextColor(getColor(status.textColorRes));
 
         TextView txtRemaining = card.findViewById(R.id.txtRemaining);
         if (limit > 0) {
@@ -204,8 +225,9 @@ public class HomeActivity extends BaseActivity {
             txtRemaining.setText("—");
         }
 
-        BarView bar = card.findViewById(R.id.barUsage);
-        bar.setProgress((float) (Consumption.usagePercent(r.monthlyKwh, limit) / 100), status.colorRes);
+        ProgressBar bar = card.findViewById(R.id.barUsage);
+        bar.setProgress((int) Math.min(Consumption.usagePercent(r.monthlyKwh, limit), 100));
+        bar.setProgressTintList(ColorStateList.valueOf(getColor(status.colorRes)));
 
         String limitText = limit > 0
                 ? Format.num(r.monthlyKwh) + " de " + Format.kwh(limit)
@@ -230,7 +252,7 @@ public class HomeActivity extends BaseActivity {
             setText(R.id.txtTopDevicesStatus, "Nenhum dispositivo cadastrado ainda.");
             return;
         }
-        Views.show(findViewById(R.id.txtTopDevicesStatus), false);
+        findViewById(R.id.txtTopDevicesStatus).setVisibility(View.GONE);
 
         for (int i = 0; i < Math.min(TOP_DEVICES, sorted.size()); i++) {
             Device d = sorted.get(i);
@@ -264,7 +286,7 @@ public class HomeActivity extends BaseActivity {
             setText(R.id.txtMembersStatus, "Nenhum membro cadastrado ainda.");
             return;
         }
-        Views.show(findViewById(R.id.txtMembersStatus), false);
+        findViewById(R.id.txtMembersStatus).setVisibility(View.GONE);
 
         double max = 1;
         for (MemberConsumption m : members) max = Math.max(max, m.kwh);
@@ -273,8 +295,9 @@ public class HomeActivity extends BaseActivity {
             View row = inflater.inflate(R.layout.item_bar_row, memberUsageContainer, false);
             ((TextView) row.findViewById(R.id.txtLabel)).setText(m.name);
             ((TextView) row.findViewById(R.id.txtCaption)).setText(Format.kwh(m.kwh) + " · " + Format.brl(m.cost));
-            BarView bar = row.findViewById(R.id.bar);
-            bar.setProgress((float) (m.kwh / max), R.color.green_start, R.color.green_end);
+            ProgressBar bar = row.findViewById(R.id.bar);
+            bar.setProgress((int) (m.kwh / max * 100));
+            bar.setProgressTintList(ColorStateList.valueOf(getColor(R.color.green_end)));
             memberUsageContainer.addView(row);
         }
     }
@@ -299,7 +322,7 @@ public class HomeActivity extends BaseActivity {
 
     private void renderComparison() {
         View card = findViewById(R.id.comparisonCard);
-        Views.show(card, residences.size() >= 2);
+        card.setVisibility(residences.size() >= 2 ? View.VISIBLE : View.GONE);
         if (residences.size() < 2) return;
 
         List<ComparisonRow> rows = buildComparison();
@@ -318,14 +341,16 @@ public class HomeActivity extends BaseActivity {
             ((TextView) view.findViewById(R.id.txtValue)).setText(
                     metric == Metric.LIMIT && row.limit == null ? "—" : formatValue(row.value));
 
-            BarView bar = view.findViewById(R.id.bar);
+            int barColor;
             switch (row.status) {
-                case OK:       bar.setProgress((float) (row.value / max), R.color.green_start, R.color.green_end); break;
-                case WARNING:  bar.setProgress((float) (row.value / max), R.color.yellow); break;
-                case EXCEEDED: bar.setProgress((float) (row.value / max), R.color.status_exceeded); break;
-                default:       bar.setProgress((float) (row.value / max), R.color.blue_start, R.color.blue_end);
+                case OK:       barColor = R.color.green_end; break;
+                case WARNING:  barColor = R.color.yellow; break;
+                case EXCEEDED: barColor = R.color.status_exceeded; break;
+                default:       barColor = R.color.blue_end;
             }
-            bar.setMarker(row.limit == null ? -1 : (float) (row.limit / max));
+            ProgressBar bar = view.findViewById(R.id.bar);
+            bar.setProgress((int) (row.value / max * 100));
+            bar.setProgressTintList(ColorStateList.valueOf(getColor(barColor)));
 
             ((TextView) view.findViewById(R.id.txtDetails)).setText(comparisonDetails(row));
             view.setOnClickListener(v -> {
@@ -451,7 +476,7 @@ public class HomeActivity extends BaseActivity {
                     "Nenhuma alteração por enquanto. Adicionar uma residência, dispositivo ou membro aparece aqui.");
             return;
         }
-        Views.show(findViewById(R.id.txtHistoryStatus), false);
+        findViewById(R.id.txtHistoryStatus).setVisibility(View.GONE);
 
         for (int i = 0; i < items.size(); i++) {
             History h = items.get(i);
@@ -466,6 +491,6 @@ public class HomeActivity extends BaseActivity {
     private void setText(int viewId, String text) {
         TextView view = findViewById(viewId);
         view.setText(text);
-        Views.show(view, true);
+        view.setVisibility(View.VISIBLE);
     }
 }

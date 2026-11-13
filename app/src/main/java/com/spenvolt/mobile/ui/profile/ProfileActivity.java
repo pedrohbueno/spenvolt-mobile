@@ -2,20 +2,25 @@ package com.spenvolt.mobile.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.UserApi;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.ui.auth.LoginActivity;
 import com.spenvolt.mobile.ui.auth.RegisterActivity;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.util.Format;
 
-public class ProfileActivity extends BaseActivity {
+public class ProfileActivity extends AppCompatActivity {
+
+    private SessionManager session;
 
     private EditText etCurrent;
     private EditText etNew;
@@ -26,7 +31,8 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_profile, NAV_NONE);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_profile, 0)) return;
 
         String name = session.getName();
         ((TextView) findViewById(R.id.txtAvatar)).setText(Format.initial(name));
@@ -46,10 +52,10 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void showPasswordForm(boolean visible) {
-        Views.show(findViewById(R.id.passwordForm), visible);
-        Views.show(findViewById(R.id.btnChangePassword), !visible);
-        Views.show(findViewById(R.id.txtStatus), false);
-        Views.message(txtPasswordError, null);
+        findViewById(R.id.passwordForm).setVisibility(visible ? View.VISIBLE : View.GONE);
+        findViewById(R.id.btnChangePassword).setVisibility(!visible ? View.VISIBLE : View.GONE);
+        findViewById(R.id.txtStatus).setVisibility(View.GONE);
+        txtPasswordError.setVisibility(View.GONE);
         etCurrent.setText("");
         etNew.setText("");
         etConfirm.setText("");
@@ -60,33 +66,40 @@ public class ProfileActivity extends BaseActivity {
         String next = etNew.getText().toString();
 
         if (current.isEmpty()) {
-            Views.message(txtPasswordError, "Informe a senha atual.");
+            txtPasswordError.setText("Informe a senha atual.");
+            txtPasswordError.setVisibility(View.VISIBLE);
             return;
         }
         if (next.length() < RegisterActivity.MIN_PASSWORD) {
-            Views.message(txtPasswordError, "A nova senha deve ter ao menos " + RegisterActivity.MIN_PASSWORD + " caracteres.");
+            txtPasswordError.setText("A nova senha deve ter ao menos " + RegisterActivity.MIN_PASSWORD + " caracteres.");
+            txtPasswordError.setVisibility(View.VISIBLE);
             return;
         }
         if (!next.equals(etConfirm.getText().toString())) {
-            Views.message(txtPasswordError, "A confirmação não confere com a nova senha.");
+            txtPasswordError.setText("A confirmação não confere com a nova senha.");
+            txtPasswordError.setVisibility(View.VISIBLE);
             return;
         }
 
-        Views.message(txtPasswordError, null);
-        Views.loading(btnSavePassword, true, "Salvando...", "Salvar nova senha");
+        txtPasswordError.setVisibility(View.GONE);
+        btnSavePassword.setEnabled(false);
+        btnSavePassword.setText("Salvando...");
 
         new UserApi(this).changePassword(current, next, new ApiCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Views.loading(btnSavePassword, false, "Salvando...", "Salvar nova senha");
+                btnSavePassword.setEnabled(true);
+                btnSavePassword.setText("Salvar nova senha");
                 showPasswordForm(false);
-                Views.show(findViewById(R.id.txtStatus), true);
+                findViewById(R.id.txtStatus).setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError(String message) {
-                Views.loading(btnSavePassword, false, "Salvando...", "Salvar nova senha");
-                Views.message(txtPasswordError, "Não foi possível trocar a senha. Confira a senha atual.");
+                btnSavePassword.setEnabled(true);
+                btnSavePassword.setText("Salvar nova senha");
+                txtPasswordError.setText("Não foi possível trocar a senha. Confira a senha atual.");
+                txtPasswordError.setVisibility(View.VISIBLE);
             }
         });
     }

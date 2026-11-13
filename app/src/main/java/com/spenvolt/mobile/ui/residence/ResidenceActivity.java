@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,8 +20,8 @@ import com.spenvolt.mobile.api.ResidenceApi;
 import com.spenvolt.mobile.model.Device;
 import com.spenvolt.mobile.model.Member;
 import com.spenvolt.mobile.model.Residence;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.ui.device.DeviceAdapter;
 import com.spenvolt.mobile.ui.device.DeviceDetailActivity;
 import com.spenvolt.mobile.ui.device.DeviceFormActivity;
@@ -28,7 +30,9 @@ import com.spenvolt.mobile.util.Format;
 
 import java.util.List;
 
-public class ResidenceActivity extends BaseActivity {
+public class ResidenceActivity extends AppCompatActivity {
+
+    private SessionManager session;
 
     public static final String EXTRA_RESIDENCE_ID = "residence_id";
 
@@ -45,7 +49,8 @@ public class ResidenceActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_residence, NAV_NONE);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_residence, 0)) return;
 
         residenceId = getIntent().getIntExtra(EXTRA_RESIDENCE_ID, -1);
         session.setSelectedResidenceId(residenceId);
@@ -65,7 +70,6 @@ public class ResidenceActivity extends BaseActivity {
 
         findViewById(R.id.btnSettings).setOnClickListener(v -> {
             Intent intent = new Intent(this, ResidenceSettingsActivity.class);
-            intent.putExtra(ResidenceSettingsActivity.EXTRA_RESIDENCE_ID, residenceId);
             startActivity(intent);
         });
 
@@ -89,9 +93,9 @@ public class ResidenceActivity extends BaseActivity {
         findViewById(R.id.tabMembers).setSelected(tab == Tab.MEMBERS);
         findViewById(R.id.tabPlan).setSelected(tab == Tab.PLAN);
 
-        Views.show(findViewById(R.id.panelDevices), tab == Tab.DEVICES);
-        Views.show(findViewById(R.id.panelMembers), tab == Tab.MEMBERS);
-        Views.show(findViewById(R.id.panelPlan), tab == Tab.PLAN);
+        findViewById(R.id.panelDevices).setVisibility(tab == Tab.DEVICES ? View.VISIBLE : View.GONE);
+        findViewById(R.id.panelMembers).setVisibility(tab == Tab.MEMBERS ? View.VISIBLE : View.GONE);
+        findViewById(R.id.panelPlan).setVisibility(tab == Tab.PLAN ? View.VISIBLE : View.GONE);
 
         if (tab == Tab.PLAN) fabAdd.hide();
         else fabAdd.show();
@@ -115,12 +119,13 @@ public class ResidenceActivity extends BaseActivity {
             public void onSuccess(Residence residence) {
                 ((TextView) findViewById(R.id.txtName)).setText(residence.name);
                 ((TextView) findViewById(R.id.txtAddress)).setText(residence.address);
-                Views.message(findViewById(R.id.txtError), null);
+                findViewById(R.id.txtError).setVisibility(View.GONE);
             }
 
             @Override
             public void onError(String message) {
-                Views.message(findViewById(R.id.txtError), "Residência não encontrada ou API indisponível.");
+                ((TextView) findViewById(R.id.txtError)).setText("Residência não encontrada ou API indisponível.");
+                findViewById(R.id.txtError).setVisibility(View.VISIBLE);
             }
         });
     }
@@ -131,14 +136,15 @@ public class ResidenceActivity extends BaseActivity {
             public void onSuccess(List<Device> devices) {
                 deviceAdapter.setDevices(devices);
                 floorPlan.setDevices(devices);
-                Views.empty(findViewById(R.id.emptyDevices), devices.isEmpty(),
-                        "Nenhum dispositivo cadastrado ainda",
-                        "Adicione os aparelhos da casa no botão + para acompanhar o consumo de cada um.");
+                View empty = findViewById(R.id.emptyDevices);
+                empty.setVisibility(devices.isEmpty() ? View.VISIBLE : View.GONE);
+                ((TextView) empty.findViewById(R.id.txtEmptyTitle)).setText("Nenhum dispositivo cadastrado ainda");
+                ((TextView) empty.findViewById(R.id.txtEmptyText)).setText("Adicione os aparelhos da casa no botão + para acompanhar o consumo de cada um.");
             }
 
             @Override
             public void onError(String message) {
-                toast(message);
+                Toast.makeText(ResidenceActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -152,16 +158,17 @@ public class ResidenceActivity extends BaseActivity {
 
             @Override
             public void onError(String message) {
-                toast(message);
+                Toast.makeText(ResidenceActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void renderMembers(List<Member> members) {
         membersContainer.removeAllViews();
-        Views.empty(findViewById(R.id.emptyMembers), members.isEmpty(),
-                "Nenhum membro cadastrado ainda",
-                "Adicione quem mora na casa para ver quanto cada pessoa consome.");
+        View empty = findViewById(R.id.emptyMembers);
+        empty.setVisibility(members.isEmpty() ? View.VISIBLE : View.GONE);
+        ((TextView) empty.findViewById(R.id.txtEmptyTitle)).setText("Nenhum membro cadastrado ainda");
+        ((TextView) empty.findViewById(R.id.txtEmptyText)).setText("Adicione quem mora na casa para ver quanto cada pessoa consome.");
 
         for (Member m : members) {
             View row = getLayoutInflater().inflate(R.layout.item_member_row, membersContainer, false);

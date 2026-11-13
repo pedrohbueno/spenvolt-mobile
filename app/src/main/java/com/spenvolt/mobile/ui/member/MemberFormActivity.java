@@ -2,23 +2,32 @@ package com.spenvolt.mobile.ui.member;
 
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.MemberApi;
+import com.spenvolt.mobile.api.ResidenceApi;
 import com.spenvolt.mobile.model.Member;
 import com.spenvolt.mobile.model.Residence;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 
-public class MemberFormActivity extends BaseActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemberFormActivity extends AppCompatActivity {
+
+    private final List<Residence> residences = new ArrayList<>();
+    private SessionManager session;
 
     public static final String EXTRA_RESIDENCE_ID = "residence_id";
 
@@ -33,7 +42,8 @@ public class MemberFormActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_member_form, NAV_NONE);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_member_form, 0)) return;
 
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -44,18 +54,31 @@ public class MemberFormActivity extends BaseActivity {
 
         btnSave.setOnClickListener(v -> save());
         findViewById(R.id.btnCancel).setOnClickListener(v -> finish());
+    
+        new ResidenceApi(this).findAll(new ApiCallback<List<Residence>>() {
+            @Override
+            public void onSuccess(List<Residence> result) {
+                residences.addAll(result);
+                fillResidences();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(MemberFormActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    @Override
-    protected void onResidencesLoaded(@Nullable Residence selected) {
+    private void fillResidences() {
         if (spinnerReady) return;
         if (residences.isEmpty()) {
-            Views.message(txtError, "Cadastre uma residência antes de adicionar membros.");
+            txtError.setText("Cadastre uma residência antes de adicionar membros.");
+            txtError.setVisibility(View.VISIBLE);
             btnSave.setEnabled(false);
             return;
         }
 
-        int wantedId = getIntent().getIntExtra(EXTRA_RESIDENCE_ID, selected == null ? -1 : selected.id);
+        int wantedId = getIntent().getIntExtra(EXTRA_RESIDENCE_ID, session.getSelectedResidenceId());
         int position = 0;
         for (int i = 0; i < residences.size(); i++) {
             if (residences.get(i).id == wantedId) position = i;
@@ -69,8 +92,8 @@ public class MemberFormActivity extends BaseActivity {
     }
 
     private void save() {
-        String name = Views.text(etName);
-        String email = Views.text(etEmail);
+        String name = etName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
         Residence residence = (Residence) spinnerResidence.getSelectedItem();
 
         if (name.isEmpty()) {
@@ -82,30 +105,34 @@ public class MemberFormActivity extends BaseActivity {
             return;
         }
         if (residence == null) {
-            Views.message(txtError, "Escolha a residência.");
+            txtError.setText("Escolha a residência.");
+            txtError.setVisibility(View.VISIBLE);
             return;
         }
 
         Member member = new Member();
         member.name = name;
         member.email = email;
-        member.photoUrl = Views.textOrNull(etPhotoUrl);
+        member.photoUrl = (etPhotoUrl.getText().toString().trim().isEmpty() ? null : etPhotoUrl.getText().toString().trim());
         member.residenceId = residence.id;
 
-        Views.message(txtError, null);
-        Views.loading(btnSave, true, "Salvando...", "Salvar membro");
+        txtError.setVisibility(View.GONE);
+        btnSave.setEnabled(false);
+        btnSave.setText("Salvando...");
 
         new MemberApi(this).create(member, new ApiCallback<Member>() {
             @Override
             public void onSuccess(Member created) {
-                toast("Membro adicionado.");
+                Toast.makeText(MemberFormActivity.this, "Membro adicionado.", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
             @Override
             public void onError(String message) {
-                Views.loading(btnSave, false, "Salvando...", "Salvar membro");
-                Views.message(txtError, "Algo deu errado. Tente novamente.");
+                btnSave.setEnabled(true);
+                btnSave.setText("Salvar membro");
+                txtError.setText("Algo deu errado. Tente novamente.");
+                txtError.setVisibility(View.VISIBLE);
             }
         });
     }

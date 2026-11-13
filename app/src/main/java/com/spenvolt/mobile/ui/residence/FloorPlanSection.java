@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.FloorApi;
@@ -22,7 +23,6 @@ import com.spenvolt.mobile.model.Floor;
 import com.spenvolt.mobile.model.Room;
 import com.spenvolt.mobile.model.RoomKind;
 import com.spenvolt.mobile.model.Usage;
-import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.util.Consumption;
 import com.spenvolt.mobile.util.Format;
 
@@ -147,11 +147,13 @@ class FloorPlanSection {
 
     private void render() {
         if (loading) {
-            Views.message(txtPlanStatus, "Carregando planta…");
+            txtPlanStatus.setText("Carregando planta…");
+            txtPlanStatus.setVisibility(View.VISIBLE);
         } else if (floors.isEmpty()) {
-            Views.message(txtPlanStatus, "Toque em \"+ Andar\" para começar a montar a planta.");
+            txtPlanStatus.setText("Toque em \"+ Andar\" para começar a montar a planta.");
+            txtPlanStatus.setVisibility(View.VISIBLE);
         } else {
-            Views.message(txtPlanStatus, null);
+            txtPlanStatus.setVisibility(View.GONE);
         }
         renderFloors();
         txtRoomCounts.setText(FloorSlots.summary(currentRooms()));
@@ -162,7 +164,9 @@ class FloorPlanSection {
     private void renderFloors() {
         floorChips.removeAllViews();
         for (Floor floor : floors) {
-            TextView chip = Views.addChip(floorChips, floor.name);
+            TextView chip = (TextView) LayoutInflater.from(floorChips.getContext()).inflate(R.layout.item_chip, floorChips, false);
+            chip.setText(floor.name);
+            floorChips.addView(chip);
             chip.setSelected(floor.id == floorId);
             chip.setOnClickListener(v -> {
                 floorId = floor.id;
@@ -171,7 +175,9 @@ class FloorPlanSection {
             });
         }
 
-        TextView addFloor = Views.addChip(floorChips, "+ Andar");
+        TextView addFloor = (TextView) LayoutInflater.from(floorChips.getContext()).inflate(R.layout.item_chip, floorChips, false);
+        addFloor.setText("+ Andar");
+        floorChips.addView(addFloor);
         addFloor.setBackgroundResource(R.drawable.bg_chip_dashed);
         addFloor.setTextColor(ContextCompat.getColor(context, R.color.gray_500));
         addFloor.setOnClickListener(v -> addFloor());
@@ -246,8 +252,8 @@ class FloorPlanSection {
 
     private void renderPanel() {
         Room room = selectedRoom();
-        Views.show(roomPanel, room != null);
-        Views.show(txtPlanHint, room == null && !loading && floorId != -1);
+        roomPanel.setVisibility(room != null ? View.VISIBLE : View.GONE);
+        txtPlanHint.setVisibility(room == null && !loading && floorId != -1 ? View.VISIBLE : View.GONE);
         if (room == null) return;
 
         Usage usage = Consumption.roomUsage(room, devices);
@@ -286,7 +292,7 @@ class FloorPlanSection {
     }
 
     private void renderAddDeviceSpinner(Room room, List<Device> available) {
-        Views.show(spinnerAddDevice, !available.isEmpty());
+        spinnerAddDevice.setVisibility(!available.isEmpty() ? View.VISIBLE : View.GONE);
 
         List<String> labels = new ArrayList<>();
         labels.add("+ Dispositivo");
@@ -393,7 +399,11 @@ class FloorPlanSection {
     private void confirmRemoveRoom() {
         Room room = selectedRoom();
         if (room == null) return;
-        Views.confirm(context, "Remover seção", "Remover \"" + room.name + "\" da planta?", "Remover", () ->
+        new MaterialAlertDialogBuilder(context)
+                .setTitle("Remover seção")
+                .setMessage("Remover \"" + room.name + "\" da planta?")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Remover", (dialog, which) ->
                 api.deleteRoom(room.id, new ApiCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
@@ -406,7 +416,8 @@ class FloorPlanSection {
                     public void onError(String message) {
                         showError("Não foi possível remover a seção.");
                     }
-                }));
+                }))
+                .show();
     }
 
     private void assignDevice(Room room, int deviceId) {
@@ -446,7 +457,8 @@ class FloorPlanSection {
     }
 
     private void showError(String message) {
-        Views.message(txtPlanError, message);
+        txtPlanError.setText(message);
+        txtPlanError.setVisibility(message == null ? View.GONE : View.VISIBLE);
     }
 
     private int dp(int value) {

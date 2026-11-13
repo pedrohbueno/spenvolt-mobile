@@ -5,7 +5,6 @@ import android.widget.EditText;
 
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.model.Residence;
-import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.util.Format;
 
 class ResidenceFields {
@@ -36,10 +35,10 @@ class ResidenceFields {
     }
 
     String readInto(Residence r) {
-        String name = Views.text(etName);
-        String address = Views.text(etAddress);
-        Double tariff = Format.parseDecimal(Views.text(etTariff));
-        Double alert = Format.parseDecimal(Views.text(etAlert));
+        String name = etName.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+        Double tariff = Format.parseDecimal(etTariff.getText().toString().trim());
+        Double alert = Format.parseDecimal(etAlert.getText().toString().trim());
 
         if (name.isEmpty()) return "Informe o nome da residência.";
         if (address.isEmpty()) return "Informe o endereço.";
@@ -50,8 +49,8 @@ class ResidenceFields {
         r.address = address;
         r.tariff = tariff;
         r.alertThresholdPercent = alert == null ? null : alert.intValue();
-        r.monthlyKwhLimit = Format.parseDecimal(Views.text(etKwhLimit));
-        r.monthlyCostLimit = Format.parseDecimal(Views.text(etCostLimit));
+        r.monthlyKwhLimit = Format.parseDecimal(etKwhLimit.getText().toString().trim());
+        r.monthlyCostLimit = Format.parseDecimal(etCostLimit.getText().toString().trim());
         return null;
     }
 }

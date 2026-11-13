@@ -3,6 +3,7 @@ package com.spenvolt.mobile.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -13,7 +14,6 @@ import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.AuthApi;
 import com.spenvolt.mobile.session.SessionManager;
-import com.spenvolt.mobile.ui.common.Views;
 import com.spenvolt.mobile.ui.home.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -46,25 +46,28 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> login());
 
         TextView linkRegister = findViewById(R.id.linkRegister);
-        AuthScreen.setupLink(this, linkRegister, "Não tem conta?", "Criar conta");
+        AuthScreen.setupLink(linkRegister, "Não tem conta?", "Criar conta");
         linkRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     private void login() {
-        String email = Views.text(etEmail);
+        String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Views.message(txtError, "Informe um e-mail válido.");
+            txtError.setText("Informe um e-mail válido.");
+            txtError.setVisibility(View.VISIBLE);
             return;
         }
         if (password.isEmpty()) {
-            Views.message(txtError, "Informe sua senha.");
+            txtError.setText("Informe sua senha.");
+            txtError.setVisibility(View.VISIBLE);
             return;
         }
 
-        Views.message(txtError, null);
-        Views.loading(btnLogin, true, "Entrando...", "Entrar");
+        txtError.setVisibility(View.GONE);
+        btnLogin.setEnabled(false);
+        btnLogin.setText("Entrando...");
 
         new AuthApi(this).login(email, password, new ApiCallback<String>() {
             @Override
@@ -75,8 +78,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                Views.loading(btnLogin, false, "Entrando...", "Entrar");
-                Views.message(txtError, "E-mail ou senha incorretos, ou algo deu errado. Tente novamente.");
+                btnLogin.setEnabled(true);
+                btnLogin.setText("Entrar");
+                txtError.setText("E-mail ou senha incorretos, ou algo deu errado. Tente novamente.");
+                txtError.setVisibility(View.VISIBLE);
             }
         });
     }

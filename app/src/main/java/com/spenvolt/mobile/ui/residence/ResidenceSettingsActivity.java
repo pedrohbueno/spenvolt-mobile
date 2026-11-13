@@ -5,26 +5,29 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.MemberApi;
 import com.spenvolt.mobile.api.ResidenceApi;
 import com.spenvolt.mobile.model.Member;
 import com.spenvolt.mobile.model.Residence;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.ui.home.HomeActivity;
 import com.spenvolt.mobile.util.Format;
 
 import java.util.List;
 
-public class ResidenceSettingsActivity extends BaseActivity {
+public class ResidenceSettingsActivity extends AppCompatActivity {
 
-    public static final String EXTRA_RESIDENCE_ID = "residence_id";
+    private SessionManager session;
 
     private int residenceId;
     private Residence residence;
@@ -37,9 +40,10 @@ public class ResidenceSettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_residence_settings, NAV_SETTINGS);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_residence_settings, R.id.navSettings)) return;
 
-        residenceId = getIntent().getIntExtra(EXTRA_RESIDENCE_ID, -1);
+        residenceId = session.getSelectedResidenceId();
         fields = new ResidenceFields(this);
         txtStatus = findViewById(R.id.txtStatus);
         btnSave = findViewById(R.id.btnSave);
@@ -48,14 +52,6 @@ public class ResidenceSettingsActivity extends BaseActivity {
         btnSave.setOnClickListener(v -> save());
         findViewById(R.id.btnDelete).setOnClickListener(v -> confirmDelete());
 
-        loadResidence();
-        loadMembers();
-    }
-
-    @Override
-    protected void onResidenceChanged(Residence selected) {
-        residenceId = selected.id;
-        Views.message(txtStatus, null);
         loadResidence();
         loadMembers();
     }
@@ -84,18 +80,21 @@ public class ResidenceSettingsActivity extends BaseActivity {
             return;
         }
 
-        Views.loading(btnSave, true, "Salvando...", "Salvar alterações");
+        btnSave.setEnabled(false);
+        btnSave.setText("Salvando...");
         new ResidenceApi(this).update(residence, new ApiCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Views.loading(btnSave, false, "Salvando...", "Salvar alterações");
+                btnSave.setEnabled(true);
+                btnSave.setText("Salvar alterações");
                 ((TextView) findViewById(R.id.txtResidenceName)).setText(residence.name);
                 showStatus("Alterações salvas.", true);
             }
 
             @Override
             public void onError(String message) {
-                Views.loading(btnSave, false, "Salvando...", "Salvar alterações");
+                btnSave.setEnabled(true);
+                btnSave.setText("Salvar alterações");
                 showStatus("Não foi possível salvar. Tente novamente.", false);
             }
         });
@@ -103,7 +102,8 @@ public class ResidenceSettingsActivity extends BaseActivity {
 
     private void showStatus(String message, boolean success) {
         txtStatus.setTextColor(ContextCompat.getColor(this, success ? R.color.green_text : R.color.red_600));
-        Views.message(txtStatus, message);
+        txtStatus.setText(message);
+        txtStatus.setVisibility(message == null ? View.GONE : View.VISIBLE);
     }
 
     private void loadMembers() {
@@ -115,14 +115,14 @@ public class ResidenceSettingsActivity extends BaseActivity {
 
             @Override
             public void onError(String message) {
-                toast(message);
+                Toast.makeText(ResidenceSettingsActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void renderMembers(List<Member> members) {
         membersContainer.removeAllViews();
-        Views.show(findViewById(R.id.txtMembersEmpty), members.isEmpty());
+        findViewById(R.id.txtMembersEmpty).setVisibility(members.isEmpty() ? View.VISIBLE : View.GONE);
 
         for (Member m : members) {
             View row = getLayoutInflater().inflate(R.layout.item_settings_member, membersContainer, false);
@@ -134,7 +134,11 @@ public class ResidenceSettingsActivity extends BaseActivity {
     }
 
     private void confirmRemoveMember(Member member) {
-        Views.confirm(this, "Remover membro", "Remover " + member.name + " da residência?", "Remover", () ->
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Remover membro")
+                .setMessage("Remover " + member.name + " da residência?")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Remover", (dialog, which) ->
                 new MemberApi(this).delete(member.id, new ApiCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
@@ -143,20 +147,24 @@ public class ResidenceSettingsActivity extends BaseActivity {
 
                     @Override
                     public void onError(String message) {
-                        toast("Não foi possível remover o membro. Tente novamente.");
+                        Toast.makeText(ResidenceSettingsActivity.this, "Não foi possível remover o membro. Tente novamente.", Toast.LENGTH_SHORT).show();
                     }
-                }));
+                }))
+                .show();
     }
 
     private void confirmDelete() {
         if (residence == null) return;
-        Views.confirm(this, "Excluir residência",
-                "Excluir \"" + residence.name + "\"? Esta ação não pode ser desfeita.", "Excluir", () ->
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Excluir residência")
+                .setMessage("Excluir \"" + residence.name + "\"? Esta ação não pode ser desfeita.")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Excluir", (dialog, which) ->
                         new ResidenceApi(this).delete(residenceId, new ApiCallback<Void>() {
                             @Override
                             public void onSuccess(Void result) {
                                 session.setSelectedResidenceId(-1);
-                                toast("Residência excluída.");
+                                Toast.makeText(ResidenceSettingsActivity.this, "Residência excluída.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(ResidenceSettingsActivity.this, HomeActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent);
@@ -165,8 +173,9 @@ public class ResidenceSettingsActivity extends BaseActivity {
 
                             @Override
                             public void onError(String message) {
-                                toast("Não foi possível excluir a residência. Tente novamente.");
+                                Toast.makeText(ResidenceSettingsActivity.this, "Não foi possível excluir a residência. Tente novamente.", Toast.LENGTH_SHORT).show();
                             }
-                        }));
+                        }))
+                .show();
     }
 }

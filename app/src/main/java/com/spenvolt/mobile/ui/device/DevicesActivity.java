@@ -2,12 +2,16 @@ package com.spenvolt.mobile.ui.device;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,12 +19,12 @@ import com.spenvolt.mobile.R;
 import com.spenvolt.mobile.api.ApiCallback;
 import com.spenvolt.mobile.api.DeviceApi;
 import com.spenvolt.mobile.api.MemberApi;
+import com.spenvolt.mobile.api.ResidenceApi;
 import com.spenvolt.mobile.model.Device;
 import com.spenvolt.mobile.model.Member;
 import com.spenvolt.mobile.model.Residence;
-import com.spenvolt.mobile.ui.common.BaseActivity;
-import com.spenvolt.mobile.ui.common.SimpleSelection;
-import com.spenvolt.mobile.ui.common.Views;
+import com.spenvolt.mobile.session.SessionManager;
+import com.spenvolt.mobile.ui.MenuLateral;
 import com.spenvolt.mobile.ui.residence.ResidenceFormActivity;
 
 import java.text.Collator;
@@ -30,7 +34,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
-public class DevicesActivity extends BaseActivity {
+public class DevicesActivity extends AppCompatActivity {
+
+    private SessionManager session;
 
     private static final String[] SORT_LABELS = {"Maior consumo", "Menor consumo", "Nome (A–Z)"};
     private static final int SORT_KWH_DESC = 0;
@@ -54,7 +60,8 @@ public class DevicesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setScreen(R.layout.activity_devices, NAV_DEVICES);
+        session = new SessionManager(this);
+        if (!MenuLateral.montar(this, R.layout.activity_devices, R.id.navDevices)) return;
 
         categoryChips = findViewById(R.id.categoryChips);
         spinnerMember = findViewById(R.id.spinnerMember);
@@ -75,30 +82,43 @@ public class DevicesActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResidencesLoaded(@Nullable Residence selected) {
+    protected void onResume() {
+        super.onResume();
+        int id = session.getSelectedResidenceId();
+        if (id == -1) {
+            showResidence(null);
+            return;
+        }
+        new ResidenceApi(this).findById(id, new ApiCallback<Residence>() {
+            @Override
+            public void onSuccess(Residence result) {
+                showResidence(result);
+            }
+
+            @Override
+            public void onError(String message) {
+                showResidence(null);
+            }
+        });
+    }
+
+    private void showResidence(@Nullable Residence selected) {
         residence = selected;
         if (selected == null) {
-            Views.message(txtStatus, null);
-            Views.empty(findViewById(R.id.emptyDevices), true,
-                    "Você ainda não tem residências",
-                    "Cadastre uma residência para adicionar os aparelhos dela.");
+            txtStatus.setVisibility(View.GONE);
+            View empty = findViewById(R.id.emptyDevices);
+            empty.setVisibility(View.VISIBLE);
+            ((TextView) empty.findViewById(R.id.txtEmptyTitle)).setText("Você ainda não tem residências");
+            ((TextView) empty.findViewById(R.id.txtEmptyText)).setText("Cadastre uma residência para adicionar os aparelhos dela.");
             return;
         }
         ((TextView) findViewById(R.id.txtResidence)).setText(selected.name);
         loadData();
     }
 
-    @Override
-    protected void onResidenceChanged(Residence selected) {
-        residence = selected;
-        ((TextView) findViewById(R.id.txtResidence)).setText(selected.name);
-        category = null;
-        memberId = -1;
-        loadData();
-    }
-
     private void loadData() {
-        Views.message(txtStatus, "Carregando dispositivos…");
+        txtStatus.setText("Carregando dispositivos…");
+        txtStatus.setVisibility(View.VISIBLE);
         int residenceId = residence.id;
 
         new DeviceApi(this).findByResidence(residenceId, new ApiCallback<List<Device>>() {
@@ -106,14 +126,15 @@ public class DevicesActivity extends BaseActivity {
             public void onSuccess(List<Device> result) {
                 devices.clear();
                 devices.addAll(result);
-                Views.message(txtStatus, null);
+                txtStatus.setVisibility(View.GONE);
                 renderCategories();
                 applyFilters();
             }
 
             @Override
             public void onError(String message) {
-                Views.message(txtStatus, "Não foi possível carregar os dispositivos. Tente novamente.");
+                txtStatus.setText("Não foi possível carregar os dispositivos. Tente novamente.");
+                txtStatus.setVisibility(View.VISIBLE);
             }
         });
 
@@ -148,7 +169,9 @@ public class DevicesActivity extends BaseActivity {
     }
 
     private void addCategoryChip(String label, @Nullable String value) {
-        TextView chip = Views.addChip(categoryChips, label);
+        TextView chip = (TextView) LayoutInflater.from(categoryChips.getContext()).inflate(R.layout.item_chip, categoryChips, false);
+        chip.setText(label);
+        categoryChips.addView(chip);
         chip.setSelected(value == null ? category == null : value.equals(category));
         chip.setOnClickListener(v -> {
             category = value;
@@ -172,20 +195,34 @@ public class DevicesActivity extends BaseActivity {
         spinnerMember.setOnItemSelectedListener(null);
         spinnerMember.setAdapter(spinnerAdapter);
         spinnerMember.setSelection(selectedPosition, false);
-        spinnerMember.setOnItemSelectedListener(new SimpleSelection(position -> {
-            memberId = position == 0 ? -1 : members.get(position - 1).id;
-            applyFilters();
-        }));
+        spinnerMember.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                memberId = position == 0 ? -1 : members.get(position - 1).id;
+                applyFilters();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setupSortSpinner() {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.item_spinner, SORT_LABELS);
         spinnerAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spinnerSort.setAdapter(spinnerAdapter);
-        spinnerSort.setOnItemSelectedListener(new SimpleSelection(position -> {
-            sort = position;
-            applyFilters();
-        }));
+        spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sort = position;
+                applyFilters();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void applyFilters() {
@@ -208,9 +245,10 @@ public class DevicesActivity extends BaseActivity {
         adapter.setDevices(visible);
 
         boolean filtered = !devices.isEmpty();
-        Views.empty(findViewById(R.id.emptyDevices), visible.isEmpty(),
-                filtered ? "Nenhum dispositivo neste filtro" : "Nenhum dispositivo cadastrado ainda",
-                filtered ? "Ajuste os filtros para ver outros aparelhos."
+        View empty = findViewById(R.id.emptyDevices);
+        empty.setVisibility(visible.isEmpty() ? View.VISIBLE : View.GONE);
+        ((TextView) empty.findViewById(R.id.txtEmptyTitle)).setText(filtered ? "Nenhum dispositivo neste filtro" : "Nenhum dispositivo cadastrado ainda");
+        ((TextView) empty.findViewById(R.id.txtEmptyText)).setText(filtered ? "Ajuste os filtros para ver outros aparelhos."
                         : "Adicione os aparelhos da casa no botão + para acompanhar o consumo de cada um.");
     }
 
